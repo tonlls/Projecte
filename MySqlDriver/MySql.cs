@@ -1,8 +1,8 @@
 ﻿using DBBasic;
+using DBBasic.Model;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MySqlDriver
 {
@@ -43,31 +43,32 @@ namespace MySqlDriver
 
             return -1;
         }
-        public List<passi_express> getPassis(int ses_id)
+        public List<passi_expres> getPassis(int ses_id)
         {
 
             return null;
         }
-        public List<estat_atraccio> getInfo()
+        public List<info_atraccio> getInfo()
         {
-            var res = new List<estat_atraccio>();
+            var res = new List<info_atraccio>();
             MySqlCommand com = new MySqlCommand("SELECT id,nom,url_foto,nom_parc,url_foto_parc,codi_estat,temps_espera,descripcioHTML,capacitat,alçada_maxima,alçada_maxima_acompanyant FROM atraccio", conn);
             using(var reader = com.ExecuteReader())
             {
                 do
                 {
-                    res.Add(new estat_atraccio((int)reader.GetValue(1),
-                                               (string)reader.GetValue(2),
-                                               (string)reader.GetValue(3),
-                                               (string)reader.GetValue(4),
-                                               (string)reader.GetValue(5),
-                                               (int)reader.GetValue(6),
-                                               (int)reader.GetValue(7),
-                                               (string)reader.GetValue(8),
-                                               (int)reader.GetValue(9),
-                                               (int)reader.GetValue(10),
-                                               (int)reader.GetValue(11)));
-                } while (reader.NextResult());
+                    res.Add(new info_atraccio((int)reader.GetValue(1),
+                                              (string)reader.GetValue(2),
+                                              (string)reader.GetValue(3),
+                                              (string)reader.GetValue(4),
+                                              (string)reader.GetValue(5),
+                                              (int)reader.GetValue(6),
+                                              (int)reader.GetValue(7),
+                                              (string)reader.GetValue(8),
+                                              (int)reader.GetValue(9),
+                                              (int)reader.GetValue(10),
+                                              (int)reader.GetValue(11)));
+                }
+                while (reader.NextResult());
             }
             return res;
         }
