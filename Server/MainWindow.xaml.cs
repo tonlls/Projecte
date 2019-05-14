@@ -24,7 +24,7 @@ namespace Server
         public MainWindow()
         {
             InitializeComponent();
-            var x= DBFactory.getInstance
+            var x= DBFactory.
         }
 
         public object DBFactory { get; }

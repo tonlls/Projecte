@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DBBasic
 {
-    public class DBFactory
+    public static class DBFactory
     {
         public static DBInterface getInstance(string clas)
         {
