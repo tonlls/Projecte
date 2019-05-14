@@ -14,11 +14,6 @@ CREATE TABLE estat_operatiu(
 	id INT PRIMARY KEY,
 	nom VARCHAR(30) NOT NULL UNIQUE
 );
-CREATE TABLE tipus_passi_expres(
-	id INT PRIMARY KEY,
-	nom VARCHAR(30) UNIQUE,
-	preu_dia FLOAT
-);
 -- -----------------------------------------
 CREATE TABLE preu(
 	id INT PRIMARY KEY,
@@ -26,11 +21,6 @@ CREATE TABLE preu(
 	preu_adult INT,
 	preu_nen_senior INT,
 	preu_discapacitat INT
-);
-CREATE TABLE preu_parc(
-	preu_id INT REFERENCES preu(id),
-	parc_id INT REFERENCES parc(id),
-	PRIMARY KEY(preu_id,parc_id)
 );
 /*
 CREATE TABLE preus(
@@ -51,10 +41,12 @@ CREATE TABLE entrada(
 	propietari_id INT REFERENCES client(id),
 	categoria_id INT REFERENCES categoria(id)
 );
-CREATE TABLE entrada_parc(
-	entrada_id INT REFERENCES entrada(id),
-	parc_id INT REFERENCES parc(id),
-	PRIMARY KEY(entrada_id,parc_id)
+CREATE TABLE client(
+	id INT PRIMARY KEY,
+	nif VARCHAR(10) NOT NULL,
+	nom VARCHAR(30),
+	cognom1 VARCHAR(30),
+	cognom2 VARCHAR(30)
 );
 CREATE TABLE parc(
 	id INT PRIMARY KEY,
@@ -81,7 +73,6 @@ CREATE TABLE atraccio(
 	alçada_minima_acompanyat INT,
 	alçada_minima INT 
 );
-
 CREATE TABLE incidencia(
 	id INT,
 	atraccio_id INT REFERENCES atraccio(id),
@@ -97,17 +88,26 @@ CREATE TABLE passi_express(
 	client INT,
 	data DATE
 );
+-- -------------------------
+CREATE TABLE preu_parc(
+	preu_id INT REFERENCES preu(id),
+	parc_id INT REFERENCES parc(id),
+	PRIMARY KEY(preu_id,parc_id)
+);
+CREATE TABLE entrada_parc(
+	entrada_id INT REFERENCES entrada(id),
+	parc_id INT REFERENCES parc(id),
+	PRIMARY KEY(entrada_id,parc_id)
+);
+CREATE TABLE tipus_passi_expres(
+	id INT PRIMARY KEY,
+	nom VARCHAR(30) UNIQUE,
+	preu_dia FLOAT
+);
 CREATE TABLE tipus_acces_atraccio(
 	tipus_pasi_id INT REFERENCES tipus_passi_expres(id),
 	atraccio_id INT REFERENCES atraccio(id),
 	PRIMARY KEY(tipus_pasi_id,atraccio_id)
-);
-CREATE TABLE client(
-	id INT PRIMARY KEY,
-	nif VARCHAR(10) NOT NULL,
-	nom VARCHAR(30),
-	cognom1 VARCHAR(30),
-	cognom2 VARCHAR(30)
 );
 
 -- una atracció pot tenir mes d'una incidencia oberta??, si pot incidencia actual es incoherent
