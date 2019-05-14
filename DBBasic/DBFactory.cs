@@ -5,9 +5,9 @@ using System.Text;
 
 namespace DBBasic
 {
-    public abstract class DBFactory
+    public class DBFactory
     {
-        public static DBInterface createDBFactory(string clas)
+        public static DBInterface getInstance(string clas)
         {
             Type type = Type.GetType(clas);
             ConstructorInfo ctor = type.GetConstructor(new[] { typeof(string) });

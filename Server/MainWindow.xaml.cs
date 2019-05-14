@@ -24,9 +24,11 @@ namespace Server
         public MainWindow()
         {
             InitializeComponent();
-
-            DBInterface DB = DBFactory.createDBFactory("");
+            var x= DBFactory.getInstance
         }
+
+        public object DBFactory { get; }
+
         void log(string cont)
         {
             log_tb.AppendText(cont + "\n");
