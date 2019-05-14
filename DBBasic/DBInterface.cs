@@ -12,5 +12,7 @@ namespace DBBasic
         List<info_atraccio> getInfo();
         int login(string user, string pass);
         List<passi_expres> getPassis(int ses_id);
+        bool potAccedir(int passi, int atraccio);
+        int confirmarAcces(int passi, int atraccio);
     }
 }

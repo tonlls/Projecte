@@ -31,6 +31,7 @@ CREATE TABLE preu(
 CREATE TABLE client(
 	id INT,
 	nif VARCHAR(10) NOT NULL,
+	contrasenya VARCHAR(30),
 	nom VARCHAR(30),
 	cognom1 VARCHAR(30),
 	cognom2 VARCHAR(30),
@@ -144,6 +145,7 @@ CREATE TABLE passi_express(
 
 -- falten taules? usuaris/passwords? cua atraccio?
 
+--control errors al conectar db inexistent
 commit;
 /*
 CREATE TABLE preus(

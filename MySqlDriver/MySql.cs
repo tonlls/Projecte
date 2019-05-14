@@ -72,5 +72,15 @@ namespace MySqlDriver
             }
             return res;
         }
+
+        public bool potAccedir(int passi, int atraccio)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int confirmarAcces(int passi, int atraccio)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

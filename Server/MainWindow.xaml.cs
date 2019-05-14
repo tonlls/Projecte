@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DBBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,8 @@ namespace Server
         public MainWindow()
         {
             InitializeComponent();
+
+            DBInterface DB = DBFactory.createDBFactory("");
         }
         void log(string cont)
         {
