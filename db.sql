@@ -1,102 +1,125 @@
-drop database if exists port_aventura;
-create database port_aventura;
-use port_aventura;
-create table preus(
-	parc1_id int REFERENCES parc(id),
-	parc2_id int REFERENCES parc(id),
-	parc3_id int REFERENCES parc(id),
-	num_dies int,
-	preu_adult int,
-	preu_nen_senior int,
-	preu_discapacitat int
+DROP database IF EXISTS port_aventura;
+CREATE database port_aventura;
+USE port_aventura;
+-- enums----------------------------------
+CREATE TABLE categoria_entrada(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	nom VARCHAR(30) UNIQUE
 );
-create table entrada(
-	id int PRIMARY KEY AUTO_INCREMENT,
-	data date,
-	dies_validesa int,
+CREATE TABLE tipus_acces(
+	id INT PRIMARY KEY,
+	nom VARCHAR(30) NOT NULL UNIQUE
+);
+CREATE TABLE estat_operatiu(
+	id INT PRIMARY KEY,
+	nom VARCHAR(30) NOT NULL UNIQUE
+);
+CREATE TABLE tipus_passi_expres(
+	id INT PRIMARY KEY,
+	nom VARCHAR(30) UNIQUE,
+	preu_dia FLOAT
+);
+-- -----------------------------------------
+CREATE TABLE preu(
+	id INT PRIMARY KEY,
+	dies INT NOT NULL,
+	preu_adult INT,
+	preu_nen_senior INT,
+	preu_discapacitat INT
+);
+CREATE TABLE preu_parc(
+	preu_id INT REFERENCES preu(id),
+	parc_id INT REFERENCES parc(id),
+	PRIMARY KEY(preu_id,parc_id)
+);
+/*
+CREATE TABLE preus(
+	parc1_id INT REFERENCES parc(id),
+	parc2_id INT REFERENCES parc(id),
+	parc3_id INT REFERENCES parc(id),
+	num_dies INT,
+	preu_adult INT,
+	preu_nen_senior INT,
+	preu_discapacitat INT
+);
+*/
+CREATE TABLE entrada(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	data DATE,
+	dies_validesa INT,
 	preu float,
-	propietari_id int REFERENCES client(id),
-	categoria_id int REFERENCES categoria(id)
+	propietari_id INT REFERENCES client(id),
+	categoria_id INT REFERENCES categoria(id)
 );
-create table entrada_parc(
-	entrada_id int,
-	parc_id int,
+CREATE TABLE entrada_parc(
+	entrada_id INT REFERENCES entrada(id),
+	parc_id INT REFERENCES parc(id),
 	PRIMARY KEY(entrada_id,parc_id)
 );
-create table categoria_entrada(
-	id int PRIMARY KEY,
-	nom varchar(30) UNIQUE
+CREATE TABLE parc(
+	id INT PRIMARY KEY,
+	nom VARCHAR(30) NOT NULL,
+	url_foto VARCHAR(50)
 );
-create table parc(
-	id int PRIMARY KEY,
-	nom varchar(30),
-	url_foto varchar(50)
-);
-create table zona(
-	id int,
-	parc_id int,
-	nom varchar(30),
+CREATE TABLE zona(
+	id INT,
+	parc_id INT REFERENCES parc(id),
+	nom VARCHAR(30) NOT NULL,
 	PRIMARY KEY(id,parc_id)
 );
-create table atraccio(
-	id int PRIMARY KEY,
-	zona_id int REFERENCES zona(id),
-	--incidencia_actual_id int REFERENCES incidencia(id),
-	estat_actual_id int REFERENCES estat_operatiu(id),
-	capacitat_maxima_ronda int,
-	descripcioHTML varchar(300),
-	nom varchar(30),
-	temps_per_ronda int,
-	url_foto varchar(50),
-	clients_cua int,
-	alçada_minima_acompanyat int,
-	alçada_minima int 
+CREATE TABLE atraccio(
+	id INT PRIMARY KEY,
+	zona_id INT REFERENCES zona(id),
+	-- incidencia_actual_id INT REFERENCES incidencia(id),
+	estat_actual_id INT REFERENCES estat_operatiu(id),
+	capacitat_maxima_ronda INT,
+	descripcioHTML VARCHAR(300),
+	nom VARCHAR(30) NOT NULL,
+	temps_per_ronda INT,
+	url_foto VARCHAR(50),
+	clients_cua INT,
+	alçada_minima_acompanyat INT,
+	alçada_minima INT 
 );
-create table tipus_acces(
-	id int PRIMARY KEY,
-	nom varchar(30) UNIQUE
-);
-create table estat_operatiu(
-	id int PRIMARY KEY,
-	nom varchar(30) UNIQUE
-);
-create table incidencia(
-	id int,
-	atraccio_id int REFERENCES atraccio(id),
-	estat_operatiu_id int REFERENCES estat_operatiu(id),
-	data_fi date,
-	data_inici date,
-	missatge_estat varchar(50),
-	data_fi_prevista date,
+
+CREATE TABLE incidencia(
+	id INT,
+	atraccio_id INT REFERENCES atraccio(id),
+	estat_operatiu_id INT REFERENCES estat_operatiu(id),
+	data_fi DATE,
+	data_inici DATE,
+	missatge_estat VARCHAR(50),
+	data_fi_prevista DATE,
 	PRIMARY KEY(id,atraccio_id)
 );
-create table tipus_passi_expres(
-	id int PRIMARY KEY,
-	nom varchar(30) UNIQUE,
-	preu_dia float
+CREATE TABLE passi_express(
+	id INT PRIMARY KEY,
+	client INT,
+	data DATE
 );
-create table passi_express(
-	id int PRIMARY KEY,
-	client int,
-	data date
+CREATE TABLE tipus_acces_atraccio(
+	tipus_pasi_id INT REFERENCES tipus_passi_expres(id),
+	atraccio_id INT REFERENCES atraccio(id),
+	PRIMARY KEY(tipus_pasi_id,atraccio_id)
 );
-create table tipus_acces_atraccio(
-	tipus_pasi_express_id int,
-	atraccio_id int,
-	PRIMARY KEY(tipus_pasi_express_id,atraccio_id)
-);
-create table client(
-	id int PRIMARY KEY,
-	nif varchar(10),
-	nom varchar(30),
-	cognom1 varchar(30),
-	cognom2 varchar(30)
+CREATE TABLE client(
+	id INT PRIMARY KEY,
+	nif VARCHAR(10) NOT NULL,
+	nom VARCHAR(30),
+	cognom1 VARCHAR(30),
+	cognom2 VARCHAR(30)
 );
 
---una atracció pot tenir mes d'una incidencia oberta??, si pot incidencia actual es incoherent
+-- una atracció pot tenir mes d'una incidencia oberta??, si pot incidencia actual es incoherent
 
---numero_dusos es redundant jja que o sera 1 o sera 0 o l'haurem de modificar cada cop que puja a l'atracció, seria mes util afegir un registre nou , i aixi podem controlar dates i hores.
+-- numero_dusos es redundant jja que o sera 1 o sera 0 o l'haurem de modificar cada cop que puja a l'atracció, seria mes util afegir un registre nou , i aixi podem controlar dates i hores.
 
---quines dates es guarden en entrada i en passi express
+-- en accedir a una atraccio amb passi express s'incrementa numero d'usos d'un registre unic per passi o be es fa un registe per cada acces amb PK passi i atraccio, o be es fa un registr per atraccio i si existeix es modifica i si no es crea?
 
---passi expres es valid nomes el dia de compra??
+-- quines dates es guarden en entrada i en passi express
+
+-- passi expres es valid nomes el dia de compra??
+
+-- falten taules? usuaris/passwords? cua atraccio?
+
+commit;
