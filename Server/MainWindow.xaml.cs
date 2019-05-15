@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,13 +23,43 @@ namespace Server
     /// </summary>
     public partial class MainWindow : Window
     {
+        DBInterface db;
+        private Socket sock;
+
         public MainWindow()
         {
             InitializeComponent();
-            var x= DBFactory.
+            db= DBFactory.getInstance("MySqlDriver.MySql, MySqlDriver");
+            var x=db.getInfo();
         }
-
-        public object DBFactory { get; }
+        private void Start()
+        {
+            log("Server starting...");
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+            sock = new Socket(ipAddress.AddressFamily,
+                SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
+                sock.Bind(localEndPoint);
+                sock.Listen(10);
+                log("Server started");
+                while (true)
+                {
+                    Socket handler = sock.Accept();
+                    Task.Run(() =>
+                    {
+                        //client_atend(handler);
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                log("ERROR: error starting server:");
+                log("\t" + e.ToString());
+            }
+        }
 
         void log(string cont)
         {

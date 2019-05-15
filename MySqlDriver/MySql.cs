@@ -8,12 +8,14 @@ namespace MySqlDriver
 {
     public class MySql : DBInterface
     {
+        public static int SESS_ID = 0;
+
         MySqlConnection conn;
-        MySqlCommand comand;
         MySqlTransaction trans;
         public MySql(string connstr= "Server=localhost;Uid=root;Pwd=;database=port_aventura")
         {
-            this.conn = new MySqlConnection(connstr);
+            conn = new MySqlConnection(connstr);
+            conn.Open();
             trans = conn.BeginTransaction();
         }
         public void Rollback()
@@ -40,7 +42,9 @@ namespace MySqlDriver
         }
         public int login(string user,string pass)
         {
-
+            MySqlCommand com = new MySqlCommand("SELECT contrasenya FROM client WHERE nif=@nif'", conn);
+            DBUtils.CrearParametre("nif", user, com);
+            if (pass == com.ExecuteScalar()) return SESS_ID++;
             return -1;
         }
         public List<passi_expres> getPassis(int ses_id)

@@ -20,10 +20,10 @@ namespace DBBasic.Model
             System.Buffer.BlockCopy(body, 0, ret, head.Length, body.Length);
             return ret;
         }
-        public string serialize()
+        /*public string serialize()
         {
             return new JavaScriptSerializer().Serialize(this);
-        }
+        }*/
         public object deserialize(string cont)
         {
             return new JavaScriptSerializer().Deserialize<info_atraccio>(cont);

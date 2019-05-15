@@ -8,4 +8,11 @@
     <PackageReference Include="Nancy" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MySqlDriver">
+      <HintPath>..\MySqlDriver\bin\Debug\netstandard2.0\MySqlDriver.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
 </Project>
