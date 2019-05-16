@@ -24,7 +24,7 @@ namespace DBBasic.Model
         {
             return new JavaScriptSerializer().Serialize(this);
         }*/
-        public object deserialize(string cont)
+        public static object deserialize(string cont)
         {
             return new JavaScriptSerializer().Deserialize<info_atraccio>(cont);
         }

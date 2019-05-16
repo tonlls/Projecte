@@ -47,8 +47,10 @@ CREATE TABLE tipus_passi_expres(
 	id INT AUTO_INCREMENT,
 	nom VARCHAR(30),
 	preu_dia FLOAT,
+	tipus_acces_id INT NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (nom)
+	UNIQUE (nom),
+	FOREIGN KEY(tipus_acces_id) REFERENCES tipus_acces(id)
 );
 CREATE TABLE entrada(
 	id INT AUTO_INCREMENT,
@@ -73,6 +75,7 @@ CREATE TABLE zona(
 CREATE TABLE atraccio(
 	id INT,
 	zona_id INT,
+	parc_id INT,
 	-- incidencia_actual_id INT REFERENCES incidencia(id),
 	estat_actual_id INT,
 	capacitat_maxima_ronda INT,
@@ -84,7 +87,7 @@ CREATE TABLE atraccio(
 	alçada_minima_acompanyat INT,
 	alçada_minima INT,
 	PRIMARY KEY (id),
-	FOREIGN KEY (zona_id) REFERENCES zona(id),
+	FOREIGN KEY (zona_id,parc_id) REFERENCES zona(id,parc_id),
 	FOREIGN KEY (estat_actual_id) REFERENCES estat_operatiu(id)
 );
 
@@ -131,13 +134,16 @@ CREATE TABLE passi_express(
 	FOREIGN KEY (client_id) REFERENCES client(id),
 	FOREIGN KEY (tipus_id) REFERENCES tipus_passi_expres(id)
 );
-create table info_utilitzacio(
-	id int,
-	tipus_id int,
-	passi_id int,
+CREATE TABLE info_utilitzacio(
+	id INT AUTO_INCREMENT,
+	passi_id INT,
+	atraccio_id INT,
+	num_usos INT NOT NULL,
+	-- tipus_id int,
 	PRIMARY KEY(id),
-	FOREIGN KEY(tipus_id) REFERENCES tipus_acces(id),
-	FOREIGN KEY(passi_id) REFERENCES passi_express(id)
+	FOREIGN KEY(passi_id) REFERENCES passi_express(id),
+	FOREIGN KEY(atraccio_id) REFERENCES atraccio(id)
+	-- FOREIGN KEY(tipus_id) REFERENCES tipus_acces(id),
 	
 );
 insert into categoria_entrada values(1,'ADULT');
@@ -150,7 +156,7 @@ insert into preu_parc values(1,1);
 insert into tipus_passi_expres(nom,preu_dia) values('test',10);
 insert into entrada(dies_validesa,preu,client_id,categoria_id,preu_id) values(1,12.21,1,1,1);
 insert into zona values(1,1,'test');
-insert into atraccio values(1,1,1,10,'','atraccio test',10,'',0,10,10);
+insert into atraccio values(1,1,1,1,10,'','atraccio test',10,'',0,10,10);
 insert into incidencia(atraccio_id,estat_operatiu_id,missatge_estat) values(1,1,'');
 insert into entrada_parc values(1,1);
 insert into tipus_acces_atraccio values(1,1);

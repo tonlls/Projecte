@@ -12,13 +12,23 @@ namespace DBBasic
         public string nom_parc;
         public string url_foto_parc;
         public int codi_estat;
-        public int temps_espera_minuts;
+        public float temps_espera_minuts;
         public string descripcio_html;
         public int capacitat;
         public int alçada_minima;
         public int alçada_minima_acompanyant;
 
-        public info_atraccio(int id, string nom, string url_foto, string nom_parc, string url_foto_parc, int codi_estat, int temps_espera_minuts, string descripcio_html, int capacitat, int alçada_minima, int alçada_minima_acompanyant)
+        public info_atraccio(int id,
+                             string nom,
+                             string url_foto,
+                             string nom_parc,
+                             string url_foto_parc,
+                             int codi_estat,
+                             float temps_espera_minuts,
+                             string descripcio_html,
+                             int capacitat,
+                             int alçada_minima,
+                             int alçada_minima_acompanyant)
         {
             this.id = id;
             this.nom = nom;

@@ -1,4 +1,5 @@
 ﻿using DBBasic;
+using DBBasic.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace Server
         public MainWindow()
         {
             InitializeComponent();
-            var y=typeof(MySqlDriver.MySql).AssemblyQualifiedName;
+            //var y=typeof(MySqlDriver.MySql).AssemblyQualifiedName;
             db= DBFactory.getInstance("MySqlDriver.MySql, MySqlDriver");
             var x=db.getInfo();
         }
@@ -51,7 +52,7 @@ namespace Server
                     Socket handler = sock.Accept();
                     Task.Run(() =>
                     {
-                        //client_atend(handler);
+                        client_atend(handler);
                     });
                 }
             }
@@ -60,6 +61,19 @@ namespace Server
                 log("ERROR: error starting server:");
                 log("\t" + e.ToString());
             }
+        }
+
+        private void client_atend(Socket handler)
+        {
+            Recive(handler);
+            handler.Close();
+        }
+        private Request Recive(Socket handler)
+        {
+            int len = Serializable.HEADER_LENGTH;
+            byte[] buf= new byte[len];
+            handler.Receive(buf, len,SocketFlags.None);
+            return (Request)Serializable.deserialize(Encoding.ASCII.GetString(buf));
         }
 
         void log(string cont)
