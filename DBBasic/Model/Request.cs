@@ -6,11 +6,13 @@ namespace DBBasic.Model
 {
     public class Request : Serializable
     {
-        private string function;
+        public string function;
+        public object[] args;
 
-        public Request(string function)
+        public Request(string function, object[] args)
         {
             this.function = function;
+            this.args = args;
         }
     }
 }

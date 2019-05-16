@@ -65,7 +65,12 @@ namespace Server
 
         private void client_atend(Socket handler)
         {
-            Recive(handler);
+
+            Request req=Recive(handler);
+            switch (req.function)
+            {
+                //case "login":handler.Send()
+            }
             handler.Close();
         }
         private Request Recive(Socket handler)
