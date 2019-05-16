@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="DBBasic">
       <HintPath>..\DBBasic\bin\Debug\netstandard2.0\DBBasic.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
@@ -49,6 +50,8 @@
     </Reference>
     <Reference Include="MySqlDriver">
       <HintPath>..\MySqlDriver\bin\Debug\netstandard2.0\MySqlDriver.dll</HintPath>
+      <Private>True</Private>
+      <Aliases>global</Aliases>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />

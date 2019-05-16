@@ -29,6 +29,7 @@ namespace Server
         public MainWindow()
         {
             InitializeComponent();
+            var y=typeof(MySqlDriver.MySql).AssemblyQualifiedName;
             db= DBFactory.getInstance("MySqlDriver.MySql, MySqlDriver");
             var x=db.getInfo();
         }
