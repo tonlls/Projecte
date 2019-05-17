@@ -15,9 +15,7 @@ namespace DBBasic.output_obj
         public ERROR_CODES code;
         public string msg;
 
-        public error_obj()
-        {
-        }
+        
         public error_obj(ERROR_CODES code, string msg)
         {
             this.code = code;

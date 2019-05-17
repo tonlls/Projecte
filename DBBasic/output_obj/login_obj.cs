@@ -8,11 +8,6 @@ namespace DBBasic.output_obj
     public class login_obj : Serializable
     {
         public int code;
-
-        public login_obj()
-        {
-        }
-
         public login_obj(int code)
         {
             this.code = code;

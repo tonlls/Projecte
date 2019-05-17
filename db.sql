@@ -23,9 +23,9 @@ CREATE TABLE estat_operatiu(
 CREATE TABLE preu(
 	id INT,
 	dies INT NOT NULL,
-	preu_adult INT,
-	preu_nen_senior INT,
-	preu_discapacitat INT,
+	preu_adult INT NOT NULL,
+	preu_nen_senior INT NOT NULL,
+	preu_discapacitat INT NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE TABLE client(
@@ -40,7 +40,7 @@ CREATE TABLE client(
 CREATE TABLE parc(
 	id INT,
 	nom VARCHAR(30) NOT NULL,
-	url_foto VARCHAR(50),
+	url_foto VARCHAR(50) NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE TABLE tipus_passi_expres(
@@ -57,11 +57,11 @@ CREATE TABLE entrada(
 	data DATETIME DEFAULT CURRENT_TIMESTAMP,
 	dies_validesa INT,
 	preu float,
-	client_id INT,
+	-- client_id INT,
 	categoria_id INT,
 	preu_id INT,
 	PRIMARY KEY (id),
-	FOREIGN KEY (client_id) REFERENCES client(id),
+	-- FOREIGN KEY (client_id) REFERENCES client(id),
 	FOREIGN KEY (categoria_id) REFERENCES categoria_entrada(id),
 	FOREIGN KEY (preu_id) REFERENCES preu(id)
 );
