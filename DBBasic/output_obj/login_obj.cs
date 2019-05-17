@@ -9,6 +9,10 @@ namespace DBBasic.output_obj
     {
         public int code;
 
+        public login_obj()
+        {
+        }
+
         public login_obj(int code)
         {
             this.code = code;

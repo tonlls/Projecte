@@ -26,13 +26,15 @@ namespace Server
     {
         DBInterface db;
         private Socket sock;
+        private bool stoping=false;
+        private int clients=0;
 
         public MainWindow()
         {
             InitializeComponent();
             //var y=typeof(MySqlDriver.MySql).AssemblyQualifiedName;
             db= DBFactory.getInstance("MySqlDriver.MySql, MySqlDriver");
-            var x=db.getInfo();
+            //var x=db.getInfo();
         }
         private void Start()
         {
@@ -47,7 +49,7 @@ namespace Server
                 sock.Bind(localEndPoint);
                 sock.Listen(10);
                 log("Server started");
-                while (true)
+                while (!stoping)
                 {
                     Socket handler = sock.Accept();
                     Task.Run(() =>
@@ -55,6 +57,9 @@ namespace Server
                         client_atend(handler);
                     });
                 }
+                while (clients > 0) ;
+                sock.Shutdown(SocketShutdown.Both);
+                sock.Close();
             }
             catch (Exception e)
             {
@@ -62,23 +67,43 @@ namespace Server
                 log("\t" + e.ToString());
             }
         }
+        public void Stop()
+        {
+            stoping = true;
+        }
 
         private void client_atend(Socket handler)
         {
-
+            clients++;
             Request req=Recive(handler);
             switch (req.function)
             {
-                //case "login":handler.Send()
+                case "login":login(req);break;
+
             }
+            handler.Shutdown(SocketShutdown.Both);
             handler.Close();
+            clients--;
+        }
+
+        private Serializable login(Request req)
+        {
+            if (req.args.Count() == 2&&req.args[0].GetType()==typeof(string)&&req.args[1].GetType()==typeof(string))
+            {
+                return db.login((string)req.args[0], (string)req.args[1]);
+            }
+            return (Serializable)(new DBBasic.output_obj.error_obj());
+        }
+        private void Send(Socket sok,Serializable obj)
+        {
+            sok.Send(obj.serialize());
         }
         private Request Recive(Socket handler)
         {
             int len = Serializable.HEADER_LENGTH;
             byte[] buf= new byte[len];
             handler.Receive(buf, len,SocketFlags.None);
-            return (Request)Serializable.deserialize(Encoding.ASCII.GetString(buf));
+            return (Request)Serializable.deserialize(buf);
         }
 
         void log(string cont)

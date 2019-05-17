@@ -9,6 +9,10 @@ namespace DBBasic.Model
         public List<info_atraccio> estats_atraccions;
         public int num_atraccions;
 
+        public info_obj()
+        {
+        }
+
         public info_obj(List<info_atraccio> estats_atraccions)
         {
             this.estats_atraccions = estats_atraccions;
