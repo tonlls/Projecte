@@ -3,6 +3,7 @@ using DBBasic.Model;
 using DBBasic.output_obj;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -21,16 +22,13 @@ using System.Windows.Shapes;
 
 namespace Server
 {
-    /// <summary>
-    /// Lógica de interacción para MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         DBInterface db;
         private Socket sock;
         private bool stoping = false;
         private int clients = 0;
-        private int threads = 0;
+        private List<StopableThread> simulations=new List<StopableThread>();
 
         public MainWindow()
         {
@@ -42,15 +40,28 @@ namespace Server
         private void Start()
         {
             log("Server starting...");
-            start_server();
+            Task.Run(() =>
+            {
+                start_server();
+                strat_simulation();
+            });
             log("Server started...");
+        }
+
+        private void strat_simulation()
+        {
+            List<info_atraccio> lst=db.getAtraccions();
+            foreach(info_atraccio a in lst)
+            {
+                
+            }
         }
 
         private void start_server()
         {
             log("starting TCP/IP server");
-            ThreadStart childref = new ThreadStart(client_atend);
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            //ThreadStart childref = new ThreadStart(client_atend);
+            IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
             sock = new Socket(ipAddress.AddressFamily,
@@ -81,7 +92,18 @@ namespace Server
 
         public void Stop()
         {
+            log("Stopping Server");
+            log("Stopping TCP/IP Server");
             stoping = true;
+            log("Stopping Simulations");
+            foreach(StopableThread t in simulations)
+            {
+                t.Stop();
+            }
+            log("Simulations stoped");
+            while (clients > 0) ;
+            log("TCP/IP Server Stoped");
+            log("Server Stoped");
         }
 
         private void client_atend(Socket handler)
@@ -92,6 +114,8 @@ namespace Server
             switch (req.function)
             {
                 case "login":res=login(req);break;
+                case "getInfoParcs":res = getInfoParcs(req);break;
+                case "getInfoAtraccions": res=login(req);break;
                 case "getPassis": res = getPassis(req);break;
                 case "canAcces": res = canAcces(req); break;
                 case "confirmAcces": res = confirmAcces(req); break;
@@ -101,6 +125,11 @@ namespace Server
             handler.Shutdown(SocketShutdown.Both);
             handler.Close();
             clients--;
+        }
+
+        private Serializable getInfoParcs(Request req)
+        {
+            return db.getInfoParcs();
         }
 
         private Serializable confirmAcces(Request req)
@@ -152,7 +181,20 @@ namespace Server
 
         void log(string cont)
         {
-            log_tb.AppendText(cont + "\n");
+            App.Current.Dispatcher.Invoke((Action)delegate
+            {
+                log_tb.AppendText(cont + Environment.NewLine);
+            });
+        }
+
+        private void Start_Click(object sender, RoutedEventArgs e)
+        {
+            Start();
+        }
+
+        private void Stop_Click(object sender, RoutedEventArgs e)
+        {
+            Stop();
         }
     }
 }

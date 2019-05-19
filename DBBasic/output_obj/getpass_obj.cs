@@ -9,9 +9,6 @@ namespace DBBasic.output_obj
     {
         public List<passi_expres> passis;
         public int num_passis;
-        public getpass_obj()
-        {
-        }
         public getpass_obj(List<passi_expres> passis)
         {
             this.passis = passis;

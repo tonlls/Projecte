@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DBBasic;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,14 +7,23 @@ namespace Server
 {
     internal class StopableThread 
     {
+        private static DBInterface _db;
         private Thread _thread;
         bool _stop = false;
-        public void stop()
+        private int _time;
+        private int _capacity;
+        private int _atraccio;
+
+        public void Stop()
         {
-            _stop = false;
+            _stop = true;
         }
-        protected StopableThread()
+        protected StopableThread(int time,int capacity,int atraccio,DBInterface db)
         {
+            _time = time;
+            _capacity = capacity;
+            _atraccio = atraccio;
+            _db = db;
             _thread = new Thread(new ThreadStart(this.RunThread));
         }
 
@@ -25,7 +35,12 @@ namespace Server
         // Override in base class
         public void RunThread()
         {
-
+            while (!_stop)
+            {
+                int persones = _db.getCua(_atraccio);
+                Thread.Sleep(_time);
+                _db.updateCuaAtraccio(_atraccio,_db.getCua(_atraccio) - persones);
+            }
         }
     }
 }

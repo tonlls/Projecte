@@ -65,34 +65,6 @@ namespace MySqlDriver
         {
             throw new NotImplementedException();
         }
-        public info_obj getInfo()
-        {
-            using (var conn = new MySqlConnection(url))
-            {
-                conn.Open();
-                var res = new List<info_atraccio>();
-                MySqlCommand com = new MySqlCommand("SELECT a.id,a.nom,a.url_foto,p.nom nom_parc,p.url_foto foto_parc,a.estat_actual_id,(a.clients_cua/a.capacitat_maxima_ronda)*a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a, parc p, zona z WHERE a.zona_id = z.id and a.parc_id = z.parc_id and p.id = z.parc_id", conn);
-                using (var reader = com.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        res.Add(new info_atraccio((int)reader.GetInt32("id"),
-                                                  (string)reader.GetString("nom"),
-                                                  (string)reader.GetString("url_foto"),
-                                                  (string)reader.GetString("nom_parc"),
-                                                  (string)reader.GetString("foto_parc"),
-                                                  (int)reader.GetInt32("estat_actual_id"),
-                                                  (float)reader.GetDecimal("temps_espera"),
-                                                  (string)reader.GetString("descripcioHTML"),
-                                                  (int)reader.GetInt32("capacitat_maxima_ronda"),
-                                                  (int)reader.GetInt32("alsada_min"),
-                                                  (int)reader.GetInt32("alsada_min_acomp")));
-                        //var y = reader.GetSchemaTable();
-                    }
-                }
-                return new info_obj(res);
-            }
-        }
 
         public canacces_obj potAccedir(int passi, int atraccio)
         {
@@ -132,8 +104,14 @@ namespace MySqlDriver
             {
                 conn.Open();
                 MySqlCommand sel = new MySqlCommand("SELECT count(id) FROM info_utilitzacio WHERE passi_id=@passi AND atraccio_id=@atraccio", conn);
+                DBUtils.CrearParametre("passi", passi, sel);
+                DBUtils.CrearParametre("atraccio", atraccio, sel);
                 MySqlCommand upd = new MySqlCommand("UPDATE info_utilitzacio SET num_usos=num_usos+1 WHERE passi_id=@pass AND atraccio_id=@atraccio", conn);
+                DBUtils.CrearParametre("passi", passi, upd);
+                DBUtils.CrearParametre("atraccio", atraccio, upd);
                 MySqlCommand ins = new MySqlCommand("INSERT INTO info_utilitzacio(passi_id,atraccio_id,num_usos) VALUES(@passi,@atraccio,1)", conn);
+                DBUtils.CrearParametre("passi", passi, ins);
+                DBUtils.CrearParametre("atraccio", atraccio, ins);
                 int ok = 0;
                 if (((int)sel.ExecuteScalar()) > 0)
                 {
@@ -150,6 +128,104 @@ namespace MySqlDriver
         public void clear_sessions()
         {
             sessions.Clear();
+        }
+
+        public info_parcs_obj getInfoParcs()
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                var res = new List<info_parc>();
+                MySqlCommand com = new MySqlCommand("SELECT p.nom nom,p.url_foto url FROM parc p", conn);
+                using (var reader = com.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        res.Add(new info_parc(reader.GetString("nom"), reader.GetString("url")));
+                    }
+                }
+                return new info_parcs_obj(res);
+            }
+        }
+
+        public info_atraccions_obj getInfoAtraccions(int parc)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                var res = new List<info_atraccio>();
+                //MySqlCommand com = new MySqlCommand("SELECT a.id,a.nom,a.url_foto,p.nom nom_parc,p.url_foto foto_parc,a.estat_actual_id,(a.clients_cua/a.capacitat_maxima_ronda)*a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a, parc p, zona z WHERE a.zona_id = z.id and a.parc_id = z.parc_id and p.id = z.parc_id", conn);
+                MySqlCommand com = new MySqlCommand("SELECT a.id,a.nom,a.url_foto,a.estat_actual_id,(a.clients_cua/a.capacitat_maxima_ronda)*a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a WHERE a.parc_id = @parc", conn);
+                DBUtils.CrearParametre("parc", parc, com);
+                using (var reader = com.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        res.Add(new info_atraccio((int)reader.GetInt32("id"),
+                                                  (string)reader.GetString("nom"),
+                                                  (string)reader.GetString("url_foto"),
+                                                  (int)reader.GetInt32("estat_actual_id"),
+                                                  (float)reader.GetDecimal("temps_espera"),
+                                                  (string)reader.GetString("descripcioHTML"),
+                                                  (int)reader.GetInt32("capacitat_maxima_ronda"),
+                                                  (int)reader.GetInt32("alsada_min"),
+                                                  (int)reader.GetInt32("alsada_min_acomp")));
+                        //var y = reader.GetSchemaTable();
+                    }
+                }
+                return new info_atraccions_obj(res);
+            }
+        }
+
+        public List<info_atraccio> getAtraccions()
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                var res = new List<info_atraccio>();
+                //MySqlCommand com = new MySqlCommand("SELECT a.id,a.nom,a.url_foto,p.nom nom_parc,p.url_foto foto_parc,a.estat_actual_id,(a.clients_cua/a.capacitat_maxima_ronda)*a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a, parc p, zona z WHERE a.zona_id = z.id and a.parc_id = z.parc_id and p.id = z.parc_id", conn);
+                MySqlCommand com = new MySqlCommand("SELECT a.id,a.nom,a.url_foto,a.estat_actual_id,(a.clients_cua/a.capacitat_maxima_ronda)*a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a", conn);
+                using (var reader = com.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        res.Add(new info_atraccio((int)reader.GetInt32("id"),
+                                                  (string)reader.GetString("nom"),
+                                                  (string)reader.GetString("url_foto"),
+                                                  (int)reader.GetInt32("estat_actual_id"),
+                                                  (float)reader.GetDecimal("temps_espera"),
+                                                  (string)reader.GetString("descripcioHTML"),
+                                                  (int)reader.GetInt32("capacitat_maxima_ronda"),
+                                                  (int)reader.GetInt32("alsada_min"),
+                                                  (int)reader.GetInt32("alsada_min_acomp")));
+                        //var y = reader.GetSchemaTable();
+                    }
+                }
+                return res;
+            }
+        }
+
+        public void updateCuaAtraccio(int atraccio, int cua)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("UPDATE atraccio SET clients_cua=@cua WHERE id=@atraccio", conn);
+                DBUtils.CrearParametre("atraccio", atraccio, com);
+                DBUtils.CrearParametre("cua", cua, com);
+                com.ExecuteNonQuery();
+            }
+        }
+
+        public int getCua(int atraccio)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("SELECT clients_cua FROM atraccio WHERE id=@atraccio", conn);
+                DBUtils.CrearParametre("atraccio", atraccio, com);
+                return (int)com.ExecuteScalar();
+            }
         }
     }
 }
