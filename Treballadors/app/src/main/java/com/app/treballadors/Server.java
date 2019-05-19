@@ -10,16 +10,18 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class Server extends AsyncTask<Request,Void,Serializable> {
+public class Server extends AsyncTask<Request,Void,Object> {
 	MainActivity ma;
-	public Server(MainActivity mainActivity) {
+	Class clas;
+	public Server(MainActivity mainActivity,Class clas) {
 		ma=mainActivity;
+		this.clas=clas;
 	}
 
 	@Override
-	protected Serializable doInBackground(Request... requests) {
+	protected Object doInBackground(Request... requests) {
 
-		try(Socket sc = new Socket("localhost", 11000)){
+		try(Socket sc = new Socket("10.0.2.2", 11000)){
 			DataOutputStream dOut = new DataOutputStream(sc.getOutputStream());
 			DataInputStream dIn = new DataInputStream(sc.getInputStream());
 			dOut.write(requests[0].serialize());
@@ -28,19 +30,17 @@ public class Server extends AsyncTask<Request,Void,Serializable> {
 			int len=Integer.parseInt(head.toString());
 			byte[] bod=new byte[len];
 			dIn.read(bod,0,len);
-			return (Serializable) Serializable.deserialize(bod);
+			return Serializable.deserialize(bod,clas);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
 	@Override
-	protected void onPostExecute(Serializable serializable) {
+	protected void onPostExecute(Object serializable) {
 		super.onPostExecute(serializable);
 		ma.setResult((info_parcs_obj)serializable);
 	}

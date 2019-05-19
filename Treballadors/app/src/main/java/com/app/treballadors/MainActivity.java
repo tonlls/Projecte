@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Server at = new Server(this);
+		Server at = new Server(this,info_parcs_obj.class);
 //		pgrLoading.setVisibility(View.VISIBLE);
 		at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getInfoParcs",new Object[0]));
 	}
