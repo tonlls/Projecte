@@ -136,12 +136,12 @@ namespace MySqlDriver
             {
                 conn.Open();
                 var res = new List<info_parc>();
-                MySqlCommand com = new MySqlCommand("SELECT p.nom nom,p.url_foto url FROM parc p", conn);
+                MySqlCommand com = new MySqlCommand("SELECT p.id,p.nom nom,p.url_foto url FROM parc p", conn);
                 using (var reader = com.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        res.Add(new info_parc(reader.GetString("nom"), reader.GetString("url")));
+                        res.Add(new info_parc(reader.GetInt32("id"),reader.GetString("nom"), reader.GetString("url")));
                     }
                 }
                 return new info_parcs_obj(res);

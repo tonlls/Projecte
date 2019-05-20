@@ -9,7 +9,7 @@ namespace DBBasic.Model
 {
     public abstract class Serializable
     {
-        public static int HEADER_LENGTH=20;
+        public static int HEADER_LENGTH=4;
 
         public byte[] serialize(bool header=true)
         {
@@ -20,9 +20,14 @@ namespace DBBasic.Model
                 bf.Serialize(ms, this);
                 body=ms.ToArray();
             }*/
-            var body=Encoding.ASCII.GetBytes(new JavaScriptSerializer().Serialize(this));
+            var body=Encoding.UTF8.GetBytes(new JavaScriptSerializer().Serialize(this));
             var head = new byte[HEADER_LENGTH];
-            byte[] len = Encoding.ASCII.GetBytes((body.Length).ToString());
+            /*for(int i=0;i!=HEADER_LENGTH;i++)
+            {
+                head[i] = 0;
+            }*/
+            //byte[] len = Encoding.ASCII.GetBytes(body.Length+"\0");
+            byte[] len = BitConverter.GetBytes(body.Length);
             byte[] ret = new byte[HEADER_LENGTH + body.Length];
             System.Buffer.BlockCopy(len, 0, head, 0, len.Length);
             System.Buffer.BlockCopy(head, 0, ret, 0, head.Length);
@@ -33,7 +38,7 @@ namespace DBBasic.Model
         {
             return new JavaScriptSerializer().Serialize(this);
         }*/
-        public static object deserialize(byte[] cont)
+        public static Request deserialize(byte[] cont)
         {
             /*using (var memStream = new MemoryStream())
             {
@@ -44,9 +49,8 @@ namespace DBBasic.Model
                 return obj;
             }*/
             var sz = new JavaScriptSerializer();
-            var x = Encoding.ASCII.GetString(arrBytes);
-            Message obj = sz.Deserialize<Message>(x);
-            //return new JavaScriptSerializer().Deserialize<info_atraccio>(cont);
+            var x = Encoding.UTF8.GetString(cont);
+            return sz.Deserialize<Request>(x);
         }
     }
 }

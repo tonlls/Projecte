@@ -9,6 +9,10 @@ namespace DBBasic.Model
         public string function;
         public object[] args;
 
+        public Request()
+        {
+        }
+
         public Request(string function, object[] args)
         {
             this.function = function;

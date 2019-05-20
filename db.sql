@@ -40,7 +40,7 @@ CREATE TABLE client(
 CREATE TABLE parc(
 	id INT,
 	nom VARCHAR(30) NOT NULL,
-	url_foto VARCHAR(50) NOT NULL,
+	url_foto VARCHAR(200) NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE TABLE tipus_passi_expres(
@@ -82,7 +82,7 @@ CREATE TABLE atraccio(
 	descripcioHTML VARCHAR(300),
 	nom VARCHAR(30) NOT NULL,
 	temps_per_ronda INT,
-	url_foto VARCHAR(50),
+	url_foto VARCHAR(200),
 	clients_cua INT,
 	alçada_minima_acompanyat INT,
 	alçada_minima INT,
@@ -151,10 +151,12 @@ insert into tipus_acces values(1,'UN_SOL_US');
 insert into estat_operatiu values(1,'OPERATIU');
 insert into preu values(1,1,10,10,10);
 insert into client(nif,contrasenya,nom) values('12345678T','1234','test');
-insert into parc values (1,'parc 1','');
+insert into parc values (1,'parc 1','https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/794/small_square/portaventura-park.jpg');
+insert into parc values (2,'parc 1','https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/794/small_square/portaventura-park.jpg');
+insert into parc values (3,'parc 1','https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/794/small_square/portaventura-park.jpg');
 insert into preu_parc values(1,1);
-insert into tipus_passi_expres(nom,preu_dia) values('test',10);
-insert into entrada(dies_validesa,preu,client_id,categoria_id,preu_id) values(1,12.21,1,1,1);
+insert into tipus_passi_expres(nom,preu_dia,tipus_acces_id) values('test',10,1);
+insert into entrada(dies_validesa,preu,categoria_id,preu_id) values(1,12.21,1,1);
 insert into zona values(1,1,'test');
 insert into atraccio values(1,1,1,1,10,'','atraccio test',10,'',0,10,10);
 insert into incidencia(atraccio_id,estat_operatiu_id,missatge_estat) values(1,1,'');

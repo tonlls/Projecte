@@ -177,7 +177,11 @@ namespace Server
             int len = Serializable.HEADER_LENGTH;
             byte[] buf= new byte[len];
             handler.Receive(buf, len,SocketFlags.None);
-            return (Request)Serializable.deserialize(buf);
+            //var s=Encoding.ASCII.GetString(buf);
+            len = BitConverter.ToInt32(buf, 0);
+            byte[] bod = new byte[len];
+            handler.Receive(bod, len,SocketFlags.None);
+            return (Request)Serializable.deserialize(bod);
         }
 
         void log(string cont)

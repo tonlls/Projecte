@@ -53,6 +53,9 @@
       <Private>True</Private>
       <Aliases>global</Aliases>
     </Reference>
+    <Reference Include="Nancy, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Nancy.2.0.0\lib\net452\Nancy.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
