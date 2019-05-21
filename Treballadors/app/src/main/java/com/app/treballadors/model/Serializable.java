@@ -1,4 +1,4 @@
-package com.app.treballadors;
+package com.app.treballadors.model;
 
 import com.google.gson.Gson;
 

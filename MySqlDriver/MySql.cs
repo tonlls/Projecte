@@ -71,29 +71,34 @@ namespace MySqlDriver
             using (var conn = new MySqlConnection(url))
             {
                 conn.Open();
-                MySqlCommand com = new MySqlCommand("SELECT COUNT(a.*) count,p.tipus_id tipus FROM tipus_acces_atraccio a,passi_express p WHERE a.atraccio_id=@atraccio AND a.tipus_passi_id=p.tipus_id AND p.id=@passi)", conn);
+                //MySqlCommand comCont=new MySqlCommand("SELECT COUNT(*) ")
+                //MySqlCommand com = new MySqlCommand("SELECT COUNT(a.*) count,p.tipus_id tipus FROM tipus_acces_atraccio a,passi_express p WHERE a.atraccio_id=@atraccio AND a.tipus_passi_id=p.tipus_id AND p.id=@passi)", conn);
+                MySqlCommand com = new MySqlCommand("SELECT p.tipus_id tipus FROM tipus_acces_atraccio a,passi_express p WHERE a.atraccio_id=@atraccio AND a.tipus_passi_id=p.tipus_id AND p.id=@passi", conn);
                 DBUtils.CrearParametre("passi", passi, com);
                 DBUtils.CrearParametre("atraccio", atraccio, com);
-                var reader = com.ExecuteReader();
-                reader.Read();
-                int count = reader.GetInt32("count");
-                int type_pas = reader.GetInt32("tipus");
-                MySqlCommand com0 = new MySqlCommand("SELECT tipus_acces_id FROM tipus_passi_express WHERE id=@tipus", conn);
+                //var reader = com.ExecuteReader();
+                //reader.Read();
+                //int count = reader.GetInt32("count");
+                //int type_pas = reader.GetInt32("tipus");
+                int type_pas = (int)com.ExecuteScalar();
+                MySqlCommand com0 = new MySqlCommand("SELECT tipus_acces_id FROM tipus_passi_expres WHERE id=@tipus", conn);
                 DBUtils.CrearParametre("tipus", type_pas, com0);
                 int type = (int)com0.ExecuteScalar();
                 string motiu = "";
-                if (count == 1)
-                {
+                //if (count == 1)
+                //{
                     MySqlCommand com1 = new MySqlCommand("SELECT num_usos FROM info_utilitzacio WHERE passi_id=@pas AND atraccio_id=@atraccio", conn);
                     DBUtils.CrearParametre("pas", passi, com1);
                     DBUtils.CrearParametre("atraccio", atraccio, com1);
-                    if (type != (int)tipus_acces.ILIMITAT && type != (int)tipus_acces.ILIMITAT_UN_1A && ((int)com1.ExecuteScalar()) >= 1)
+                var r = com1.ExecuteScalar();
+                    int usos = ((int)(r==null?-1:r));
+                    if (type != (int)tipus_acces.ILIMITAT && type != (int)tipus_acces.ILIMITAT_UN_1A&&(usos!=-1 &&usos>=1))
                     {
                         motiu = "atraccio ja consumida";
                     }
-                    else if (count == 0) motiu = "atraccio no permessa";
+                    //else if (count == 0) motiu = "atraccio no permessa";
                     else return new canacces_obj.acces_permes(type == (int)tipus_acces.UN_SOL_US_1A || type == (int)tipus_acces.ILIMITAT_UN_1A ? true : false, type == (int)tipus_acces.ILIMITAT_UN_1A || type == (int)tipus_acces.ILIMITAT ? true : false);
-                }
+                //}
                 return new canacces_obj.acces_denegat(motiu);
             }
         }

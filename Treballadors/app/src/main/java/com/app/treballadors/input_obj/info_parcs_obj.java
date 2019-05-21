@@ -1,7 +1,7 @@
 package com.app.treballadors.input_obj;
 
-import com.app.treballadors.Serializable;
-import com.app.treballadors.parc;
+import com.app.treballadors.model.Serializable;
+import com.app.treballadors.model.parc;
 
 import java.util.List;
 

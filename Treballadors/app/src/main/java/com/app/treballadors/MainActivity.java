@@ -11,12 +11,11 @@ import android.widget.ProgressBar;
 
 import com.app.treballadors.input_obj.info_atraccions_obj;
 import com.app.treballadors.input_obj.info_parcs_obj;
+import com.app.treballadors.model.Request;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.io.IOException;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IActivity{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,25 +39,35 @@ public class MainActivity extends AppCompatActivity {
 		Server at = new Server(this,info_parcs_obj.class);
 		at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getInfoParcs",new Object[0]));
 	}
-	public void setResult(Object p,Class c) {
-		//pgrLoading.setVisibility(View.INVISIBLE);
+	protected void requestAtraccio(final int i){
+		Server at = new Server(this,info_atraccions_obj.class);
+		Object[] arr=new Object[1];
+		arr[0]=i;
+		at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getInfoAtraccions",arr));
+	}
+	public void setResult(Object o,Class c) {
 		((ProgressBar)findViewById(R.id.progres)).setVisibility(View.INVISIBLE);
 		RecyclerView.Adapter adapter=null;
 		if(c==info_parcs_obj.class) {
-			adapter = new ParcAdapter((((info_parcs_obj) p).parcs),this);
+			adapter = new ParcAdapter((((info_parcs_obj) o).parcs),this);
 		}else if(c == info_atraccions_obj.class){
-			adapter = new AtraccioAdapter((((info_parcs_obj) p).parcs),this);
+			adapter = new AtraccioAdapter((((info_atraccions_obj) o).estats_atraccions),this);
 		}
 		((RecyclerView)findViewById(R.id.recicler)).setAdapter(adapter);
 	}
 
 	public void parcSelected(int id) {
-		((SwipeRefreshLayout)findViewById(R.id.refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+		((ProgressBar)findViewById(R.id.progres)).setVisibility(View.VISIBLE);
+		requestAtraccio(id);
+		/*((SwipeRefreshLayout)findViewById(R.id.refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
 				requestParcs();
 				((SwipeRefreshLayout)findViewById(R.id.refresh)).setRefreshing(false);
 			}
-		});
+		});*/
+	}
+
+	public void atraccioSelected(int id) {
 	}
 }

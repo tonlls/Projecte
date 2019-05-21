@@ -1,6 +1,5 @@
 package com.app.treballadors;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.app.treballadors.model.parc;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;

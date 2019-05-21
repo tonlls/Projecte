@@ -1,7 +1,10 @@
 package com.app.treballadors;
 
 import android.os.AsyncTask;
-import com.app.treballadors.input_obj.info_parcs_obj;
+
+import com.app.treballadors.input_obj.canacces_obj;
+import com.app.treballadors.model.Request;
+import com.app.treballadors.model.Serializable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,17 +14,25 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class Server extends AsyncTask<Request,Void,Object> {
-	MainActivity ma;
+	boolean cast=true;
+	IActivity ma;
 	Class clas;
-	public Server(MainActivity mainActivity,Class clas) {
+	public Server(IActivity mainActivity,Class clas) {
 		this.ma=mainActivity;
 		this.clas=clas;
+	}
+
+	public Server(IActivity mainActivity, Class clas, boolean b) {
+		this.ma=mainActivity;
+		this.clas=clas;
+		this.cast=b;
 	}
 
 	@Override
 	protected Object doInBackground(Request... requests) {
 
-		try(Socket sc = new Socket("10.0.2.2", 11000)){
+		//try(Socket sc = new Socket("10.0.2.2", 11000)){
+		try(Socket sc = new Socket("10.132.25.189", 11000)){
 			DataOutputStream dOut = new DataOutputStream(sc.getOutputStream());
 			DataInputStream dIn = new DataInputStream(sc.getInputStream());
 			dOut.write(requests[0].serialize());
@@ -32,7 +43,8 @@ public class Server extends AsyncTask<Request,Void,Object> {
 			int len = bb.getInt();
 			byte[] bod=new byte[len];
 			dIn.read(bod,0,len);
-			return Serializable.deserialize(bod,clas);
+			if(cast)return Serializable.deserialize(bod,clas);
+			else return new String(bod);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

@@ -61,8 +61,9 @@ namespace Server
         {
             log("starting TCP/IP server");
             //ThreadStart childref = new ThreadStart(client_atend);
-            IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
-            IPAddress ipAddress = ipHostInfo.AddressList[1];
+            //IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[3];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
             sock = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);
@@ -74,7 +75,6 @@ namespace Server
                 while (!stoping)
                 {
                     Socket handler = sock.Accept();
-                    log("client connected");
                     Task.Run(() =>
                     {
                         client_atend(handler);
@@ -109,6 +109,7 @@ namespace Server
 
         private void client_atend(Socket handler)
         {
+            log("client connected");
             clients++;
             Request req=Recive(handler);
             Serializable res;
@@ -116,7 +117,7 @@ namespace Server
             {
                 case "login":res=login(req);break;
                 case "getInfoParcs":res = getInfoParcs(req);break;
-                case "getInfoAtraccions": res=login(req);break;
+                case "getInfoAtraccions": res=getinfoAtraccions(req);break;
                 case "getPassis": res = getPassis(req);break;
                 case "canAcces": res = canAcces(req); break;
                 case "confirmAcces": res = confirmAcces(req); break;
@@ -126,6 +127,16 @@ namespace Server
             handler.Shutdown(SocketShutdown.Both);
             handler.Close();
             clients--;
+            log("client disconnected");
+        }
+
+        private Serializable getinfoAtraccions(Request req)
+        {
+            if (req.args.Count() == 1 /*&& req.args[0].GetType() == typeof(int)*/)
+            {
+                return db.getInfoAtraccions((int.Parse(string.Format("{0}", req.args[0]))));
+            }
+            return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
         }
 
         private Serializable getInfoParcs(Request req)
@@ -135,7 +146,7 @@ namespace Server
 
         private Serializable confirmAcces(Request req)
         {
-            if (req.args.Count() == 2 && req.args[0].GetType() == typeof(int) && req.args[1].GetType() == typeof(int))
+            if (req.args.Count() == 2 /*&& req.args[0].GetType() == typeof(int) && req.args[1].GetType() == typeof(int)*/)
             {
                 return db.confirmarAcces((int)req.args[0], (int)req.args[1]);
             }
@@ -144,9 +155,9 @@ namespace Server
 
         private Serializable canAcces(Request req)
         {
-            if (req.args.Count() == 2 && req.args[0].GetType() == typeof(int) && req.args[1].GetType() == typeof(int))
+            if (req.args.Count() == 2 /*&& req.args[0].GetType() == typeof(int) && req.args[1].GetType() == typeof(int)*/)
             {
-                return db.potAccedir((int)req.args[0], (int)req.args[1]);
+                return db.potAccedir(int.Parse(req.args[0].ToString()), int.Parse(req.args[1].ToString()));
             }
             return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
         }

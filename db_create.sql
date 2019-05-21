@@ -47,10 +47,8 @@ CREATE TABLE tipus_passi_expres(
 	id INT AUTO_INCREMENT,
 	nom VARCHAR(30),
 	preu_dia FLOAT,
-	tipus_acces_id INT NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (nom),
-	FOREIGN KEY(tipus_acces_id) REFERENCES tipus_acces(id)
+	UNIQUE (nom)
 );
 CREATE TABLE entrada(
 	id INT AUTO_INCREMENT,
@@ -121,9 +119,11 @@ CREATE TABLE entrada_parc(
 CREATE TABLE tipus_acces_atraccio(
 	tipus_passi_id INT,
 	atraccio_id INT,
+	tipus_acces_id INT NOT NULL,
 	PRIMARY KEY (tipus_passi_id,atraccio_id),
 	FOREIGN KEY (tipus_passi_id) REFERENCES tipus_passi_expres(id),
-	FOREIGN KEY (atraccio_id) REFERENCES atraccio(id)
+	FOREIGN KEY (atraccio_id) REFERENCES atraccio(id),
+	FOREIGN KEY(tipus_acces_id) REFERENCES tipus_acces(id)
 );
 CREATE TABLE passi_express(
 	id INT AUTO_INCREMENT,
@@ -146,46 +146,4 @@ CREATE TABLE info_utilitzacio(
 	-- FOREIGN KEY(tipus_id) REFERENCES tipus_acces(id),
 	
 );
-insert into categoria_entrada values(1,'ADULT');
-insert into tipus_acces values(1,'UN_SOL_US');
-insert into estat_operatiu values(1,'OPERATIU');
-insert into preu values(1,1,10,10,10);
-insert into client(nif,contrasenya,nom) values('12345678T','1234','test');
-insert into parc values (1,'parc 1','https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/794/small_square/portaventura-park.jpg');
-insert into parc values (2,'parc 1','https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/794/small_square/portaventura-park.jpg');
-insert into parc values (3,'parc 1','https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/794/small_square/portaventura-park.jpg');
-insert into preu_parc values(1,1);
-insert into tipus_passi_expres(nom,preu_dia,tipus_acces_id) values('test',10,1);
-insert into entrada(dies_validesa,preu,categoria_id,preu_id) values(1,12.21,1,1);
-insert into zona values(1,1,'test');
-insert into atraccio values(1,1,1,1,10,'','atraccio test',10,'',0,10,10);
-insert into incidencia(atraccio_id,estat_operatiu_id,missatge_estat) values(1,1,'');
-insert into entrada_parc values(1,1);
-insert into tipus_acces_atraccio values(1,1);
-insert into passi_express(client_id,tipus_id) values(1,1);
-
--- una atracció pot tenir mes d'una incidencia oberta??, si pot incidencia actual es incoherent
-
--- numero_dusos es redundant jja que o sera 1 o sera 0 o l'haurem de modificar cada cop que puja a l'atracció, seria mes util afegir un registre nou , i aixi podem controlar dates i hores.
-
--- en accedir a una atraccio amb passi express s'incrementa numero d'usos d'un registre unic per passi o be es fa un registe per cada acces amb PK passi i atraccio, o be es fa un registr per atraccio i si existeix es modifica i si no es crea?
-
--- quines dates es guarden en entrada i en passi express
-
--- passi expres es valid nomes el dia de compra??
-
--- falten taules? usuaris/passwords? cua atraccio?
-
--- control errors al conectar db inexistent
 commit;
-/*
-CREATE TABLE preus(
-	parc1_id INT REFERENCES parc(id),
-	parc2_id INT REFERENCES parc(id),
-	parc3_id INT REFERENCES parc(id),
-	num_dies INT,
-	preu_adult INT,
-	preu_nen_senior INT,
-	preu_discapacitat INT
-);
-*/
