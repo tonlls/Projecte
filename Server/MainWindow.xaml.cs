@@ -61,10 +61,10 @@ namespace Server
         {
             log("starting TCP/IP server");
             //ThreadStart childref = new ThreadStart(client_atend);
-            IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
-            //IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            //IPAddress ipAddress = ipHostInfo.AddressList[3];
-            IPAddress ipAddress = ipHostInfo.AddressList[1];
+            //IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[3];
+            //IPAddress ipAddress = ipHostInfo.AddressList[1];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
             sock = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);
@@ -149,7 +149,7 @@ namespace Server
         {
             if (req.args.Count() == 2 /*&& req.args[0].GetType() == typeof(int) && req.args[1].GetType() == typeof(int)*/)
             {
-                return db.confirmarAcces((int)req.args[0], (int)req.args[1]);
+                return db.confirmarAcces(int.Parse(req.args[0].ToString()), int.Parse(req.args[1].ToString()));
             }
             return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
         }
@@ -167,7 +167,7 @@ namespace Server
         {
             if (req.args.Count() == 1 && req.args[0].GetType() == typeof(int))
             {
-                return db.getPassis((int)req.args[0]);
+                return db.getPassis(int.Parse(req.args[0].ToString()));
             }
             return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
         }
@@ -176,7 +176,7 @@ namespace Server
         {
             if (req.args.Count() == 2&&req.args[0].GetType()==typeof(string)&&req.args[1].GetType()==typeof(string))
             {
-                return db.login((string)req.args[0], (string)req.args[1]);
+                return db.login(req.args[0].ToString(),req.args[1].ToString());
             }
             return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
         }

@@ -15,11 +15,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
 
 class AtraccioAdapter extends RecyclerView.Adapter<AtraccioAdapter.ViewHolder> {
-	public MainActivity main;
+	public IActivity main;
 	public List<atraccio> atraccions;
-	public AtraccioAdapter(List<atraccio> atraccions, MainActivity mainActivity) {
+	public AtraccioAdapter(List<atraccio> atraccions, IActivity parcsActivity) {
 		this.atraccions=atraccions;
-		this.main=mainActivity;
+		this.main= parcsActivity;
 	}
 
 	@Override

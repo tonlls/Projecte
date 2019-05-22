@@ -43,7 +43,7 @@ CREATE TABLE parc(
 	url_foto VARCHAR(200) NOT NULL,
 	PRIMARY KEY (id)
 );
-CREATE TABLE tipus_passi_expres(
+CREATE TABLE tipus_pasi_expres(
 	id INT AUTO_INCREMENT,
 	nom VARCHAR(30),
 	preu_dia FLOAT,
@@ -95,7 +95,7 @@ CREATE TABLE incidencia(
 	estat_operatiu_id INT,
 	data_inici DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	data_fi DATETIME,
-	missatge_estat VARCHAR(50),
+	misatge_estat VARCHAR(50),
 	data_fi_prevista DATETIME,
 	PRIMARY KEY(id,atraccio_id),
 	FOREIGN KEY (atraccio_id) REFERENCES atraccio(id),
@@ -117,31 +117,31 @@ CREATE TABLE entrada_parc(
 	FOREIGN KEY (parc_id) REFERENCES parc(id)
 );
 CREATE TABLE tipus_acces_atraccio(
-	tipus_passi_id INT,
+	tipus_pasi_id INT,
 	atraccio_id INT,
 	tipus_acces_id INT NOT NULL,
-	PRIMARY KEY (tipus_passi_id,atraccio_id),
-	FOREIGN KEY (tipus_passi_id) REFERENCES tipus_passi_expres(id),
+	PRIMARY KEY (tipus_pasi_id,atraccio_id),
+	FOREIGN KEY (tipus_pasi_id) REFERENCES tipus_pasi_expres(id),
 	FOREIGN KEY (atraccio_id) REFERENCES atraccio(id),
 	FOREIGN KEY(tipus_acces_id) REFERENCES tipus_acces(id)
 );
-CREATE TABLE passi_express(
+CREATE TABLE pasi_expres(
 	id INT AUTO_INCREMENT,
 	client_id INT,
 	tipus_id INT,
 	data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id),
 	FOREIGN KEY (client_id) REFERENCES client(id),
-	FOREIGN KEY (tipus_id) REFERENCES tipus_passi_expres(id)
+	FOREIGN KEY (tipus_id) REFERENCES tipus_pasi_expres(id)
 );
 CREATE TABLE info_utilitzacio(
 	id INT AUTO_INCREMENT,
-	passi_id INT,
+	pasi_id INT,
 	atraccio_id INT,
 	num_usos INT NOT NULL,
 	-- tipus_id int,
 	PRIMARY KEY(id),
-	FOREIGN KEY(passi_id) REFERENCES passi_express(id),
+	FOREIGN KEY(pasi_id) REFERENCES pasi_expres(id),
 	FOREIGN KEY(atraccio_id) REFERENCES atraccio(id)
 	-- FOREIGN KEY(tipus_id) REFERENCES tipus_acces(id),
 	

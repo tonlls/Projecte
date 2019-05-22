@@ -36,7 +36,7 @@ insert into preu_parc(preu_id,parc_id)
 values
 	(1,1);
 	
-insert into tipus_passi_expres(nom,preu_dia) 
+insert into tipus_pasi_expres(nom,preu_dia) 
 values
 	('test',10);
 	
@@ -57,7 +57,7 @@ INSERT INTO atraccio(id,zona_id,parc_id,estat_actual_id,capacitat_maxima_ronda,d
 VALUES
 	(1, 1, 3, 1, 10, '', 'Furius Bacus', 10, 'https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/110/small_square/EXPLORA_OTRAS_DRAGON_KHAN_PAP-CH_ATR_DK_EXT_0615_012.jpg', 0, 10, 10);
 	
-insert into incidencia(atraccio_id,estat_operatiu_id,missatge_estat) 
+insert into incidencia(atraccio_id,estat_operatiu_id,misatge_estat) 
 values
 	(1,1,'');
 	
@@ -65,15 +65,15 @@ insert into entrada_parc(entrada_id,parc_id)
 values
 	(1,1);
 	
-insert into tipus_acces_atraccio(tipus_passi_id,atraccio_id,tipus_acces_id)
+insert into tipus_acces_atraccio(tipus_pasi_id,atraccio_id,tipus_acces_id)
 values
 	(1,1,1);
 	
-insert into passi_express(client_id,tipus_id)
+insert into pasi_expres(client_id,tipus_id)
 values
 	(1,1);
 
--- quines dates es guarden en entrada i en passi express
+-- quines dates es guarden en entrada i en pasi expres
 
 -- control errors al conectar db inexistent
 commit;

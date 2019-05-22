@@ -14,10 +14,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
 
 class ParcAdapter extends RecyclerView.Adapter<ParcAdapter.ViewHolder>{
-	private final MainActivity main;
+	private final ParcsActivity main;
 	public List<parc> parcs;
 
-	public ParcAdapter(List<parc> parcs,MainActivity ma) {
+	public ParcAdapter(List<parc> parcs, ParcsActivity ma) {
 		this.main=ma;
 		this.parcs = parcs;
 	}
