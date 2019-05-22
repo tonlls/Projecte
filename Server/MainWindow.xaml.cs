@@ -61,9 +61,10 @@ namespace Server
         {
             log("starting TCP/IP server");
             //ThreadStart childref = new ThreadStart(client_atend);
-            //IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[3];
+            IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
+            //IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            //IPAddress ipAddress = ipHostInfo.AddressList[3];
+            IPAddress ipAddress = ipHostInfo.AddressList[1];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
             sock = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);

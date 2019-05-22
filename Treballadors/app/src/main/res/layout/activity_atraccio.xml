@@ -5,23 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ActivityAtraccio">
+
     <ImageView
-        android:padding="100dp"
         android:id="@+id/foto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
+
     <Button
-        android:onClick="scan"
-        android:text="Scan QR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:onClick="scan"
+        android:text="Scan QR"
+        app:layout_constraintEnd_toEndOf="@+id/foto"
+        app:layout_constraintStart_toStartOf="@+id/foto"
+        app:layout_constraintTop_toBottomOf="@+id/foto"
         tools:ignore="MissingConstraints" />
     <ProgressBar
+        android:visibility="invisible"
         android:id="@+id/progres"
         android:layout_width="116dp"
         android:layout_height="128dp"

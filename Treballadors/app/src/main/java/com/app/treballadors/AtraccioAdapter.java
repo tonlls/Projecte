@@ -22,7 +22,6 @@ class AtraccioAdapter extends RecyclerView.Adapter<AtraccioAdapter.ViewHolder> {
 		this.main=mainActivity;
 	}
 
-	@NonNull
 	@Override
 	public AtraccioAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 		View fila = LayoutInflater.from(viewGroup.getContext()).inflate(

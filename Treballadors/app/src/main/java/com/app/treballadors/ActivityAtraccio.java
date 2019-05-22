@@ -69,12 +69,14 @@ public class ActivityAtraccio extends AppCompatActivity implements IActivity {
 
 	@Override
 	public void setResult(Object o, Class c) {
-		Log.v("RES=",o.toString());
-		if(((canacces_obj)new Gson().fromJson(o.toString(),canacces_obj.class)).can){
-			o=((canacces_obj.acces_permes)new Gson().fromJson(o.toString(),canacces_obj.acces_permes.class));
+		canacces_obj obj=(canacces_obj)new Gson().fromJson(o.toString(),canacces_obj.class);
+		if(obj.can){
+			obj=(new Gson().fromJson(o.toString(),canacces_obj.acces_permes.class));
+			
 		}
 		else{
-			o=((canacces_obj.acces_denegat)new Gson().fromJson(o.toString(),canacces_obj.acces_denegat.class));
+			obj=(new Gson().fromJson(o.toString(),canacces_obj.acces_denegat.class));
 		}
+
 	}
 }
