@@ -32,6 +32,7 @@ public class AtraccionsActivity extends AppCompatActivity implements IActivity {
 		});
 	}
 	protected void requestAtraccions(final int i){
+		((ProgressBar)findViewById(R.id.progres)).setVisibility(View.VISIBLE);
 		Server at = new Server(this, info_atraccions_obj.class);
 		Object[] arr=new Object[1];
 		arr[0]=i;

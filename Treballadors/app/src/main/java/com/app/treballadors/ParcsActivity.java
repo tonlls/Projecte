@@ -13,8 +13,12 @@ import android.widget.ProgressBar;
 import com.app.treballadors.input_obj.info_atraccions_obj;
 import com.app.treballadors.input_obj.info_parcs_obj;
 import com.app.treballadors.model.Request;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.StorageUtils;
+
+import java.io.File;
 
 public class ParcsActivity extends AppCompatActivity implements IActivity{
 
@@ -22,7 +26,20 @@ public class ParcsActivity extends AppCompatActivity implements IActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_parcs);
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+		//ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+
+		File cacheDir = StorageUtils.getCacheDirectory(this);
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+				.memoryCacheExtraOptions(480, 800) // default = device screen dimensions
+				.diskCacheExtraOptions(4800, 1800, null)
+		.threadPoolSize(5) // default
+				.denyCacheImageMultipleSizesInMemory()
+				.memoryCacheSize(200 * 1024 * 1024)
+				.memoryCacheSizePercentage(13) // default
+				.diskCache(new UnlimitedDiskCache(cacheDir)) // default
+				.diskCacheSize(500 * 1024 * 1024)
+				.diskCacheFileCount(100)
+				.build();
 		ImageLoader.getInstance().init(config);
 //		pgrLoading.setVisibility(View.VISIBLE);
 		((RecyclerView)findViewById(R.id.recicler)).setLayoutManager(new LinearLayoutManager(this));
@@ -37,6 +54,7 @@ public class ParcsActivity extends AppCompatActivity implements IActivity{
 		});
 	}
 	protected void requestParcs(){
+		((ProgressBar)findViewById(R.id.progres)).setVisibility(View.VISIBLE);
 		Server at = new Server(this,info_parcs_obj.class);
 		at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getInfoParcs",new Object[0]));
 	}

@@ -23,6 +23,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
+        android:visibility="invisible"
         android:id="@+id/progres"
         android:layout_width="116dp"
         android:layout_height="128dp"

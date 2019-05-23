@@ -113,16 +113,25 @@ namespace MySqlDriver
                 DBUtils.CrearParametre("pasi", passi, ins);
                 DBUtils.CrearParametre("atraccio", atraccio, ins);
                 int ok = 0;
-                int count=(int)sel.ExecuteScalar();
-                if ( count > 0)
+                long x = (long)sel.ExecuteScalar();
+                try
                 {
-                    ok = upd.ExecuteNonQuery();
+                    if (x > 0)
+                    {
+                        //ok = upd.ExecuteNonQuery();
+                        upd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        //ok = ins.ExecuteNonQuery();
+                        ins.ExecuteNonQuery();
+                    }
                 }
-                else
+                catch (Exception)
                 {
-                    ok = ins.ExecuteNonQuery();
+                    ok = -1;
                 }
-                return new confirm_obj(ok == 1 ? 0 : -1);
+                return new confirm_obj(ok);
             }
         }
 

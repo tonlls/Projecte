@@ -59,8 +59,8 @@ namespace Server
 
         private void start_server()
         {
-            log("starting TCP/IP server");
             //ThreadStart childref = new ThreadStart(client_atend);
+            log("starting TCP/IP server");
             //IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[3];
@@ -135,7 +135,7 @@ namespace Server
         {
             if (req.args.Count() == 1 /*&& req.args[0].GetType() == typeof(int)*/)
             {
-                return db.getInfoAtraccions((int.Parse(string.Format("{0}", req.args[0]))));
+                return db.getInfoAtraccions(int.Parse(string.Format("{0}", req.args[0])));
             }
             return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
         }
@@ -149,7 +149,8 @@ namespace Server
         {
             if (req.args.Count() == 2 /*&& req.args[0].GetType() == typeof(int) && req.args[1].GetType() == typeof(int)*/)
             {
-                return db.confirmarAcces(int.Parse(req.args[0].ToString()), int.Parse(req.args[1].ToString()));
+
+                return db.confirmarAcces(int.Parse(string.Format("{0}", req.args[0])), int.Parse(string.Format("{0}", req.args[1])));
             }
             return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
         }

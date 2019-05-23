@@ -2,6 +2,7 @@ package com.app.treballadors;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ class AtraccioAdapter extends RecyclerView.Adapter<AtraccioAdapter.ViewHolder> {
 		viewHolder.nom.setText(a.nom);
 		ImageLoader loader = ImageLoader.getInstance();
 		loader.displayImage( a.url_foto, viewHolder.foto);
-		viewHolder.foto.setOnClickListener(new View.OnClickListener() {
+		viewHolder.row.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent myIntent = new Intent(v.getContext(), ActivityAtraccio.class);
@@ -56,10 +57,12 @@ class AtraccioAdapter extends RecyclerView.Adapter<AtraccioAdapter.ViewHolder> {
 	public class ViewHolder extends RecyclerView.ViewHolder {
 		TextView nom;
 		ImageView foto;
+		ConstraintLayout row;
 		public ViewHolder(View itemView) {
 			super(itemView);
 			nom = itemView.findViewById(R.id.nom);
 			foto = itemView.findViewById(R.id.foto);
+			row=itemView.findViewById(R.id.row);
 		}
 	}
 }

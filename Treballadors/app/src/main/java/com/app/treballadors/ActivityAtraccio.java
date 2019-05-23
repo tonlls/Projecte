@@ -77,10 +77,10 @@ public class ActivityAtraccio extends AppCompatActivity implements IActivity {
 
 	@Override
 	public void setResult(Object o, Class c) {
+		TextView t_acces = findViewById(R.id.t_acces);
+		TextView acces = findViewById(R.id.acces);
+		Button confirm = findViewById(R.id.confirm);
 		if(c!=confirm_obj.class) {
-			TextView t_acces = findViewById(R.id.t_acces);
-			TextView acces = findViewById(R.id.acces);
-			Button confirm = findViewById(R.id.confirm);
 			canacces_obj obj = (canacces_obj) new Gson().fromJson(o.toString(), canacces_obj.class);
 			if (obj.can) {
 				canacces_obj.acces_permes objP = (new Gson().fromJson(o.toString(), canacces_obj.acces_permes.class));
@@ -96,8 +96,9 @@ public class ActivityAtraccio extends AppCompatActivity implements IActivity {
 			}
 		}
 		else{
-
-			Toast.makeText(this.getApplicationContext(),((confirm_obj)o).codi+"",Toast.LENGTH_LONG);
+			t_acces.setText("");
+			confirm.setVisibility(View.INVISIBLE);
+			acces.setText(((confirm_obj)o).codi==0?"Confirmacio Correcte":"Error");
 		}
 	}
 
@@ -105,7 +106,7 @@ public class ActivityAtraccio extends AppCompatActivity implements IActivity {
 		Object[] arr=new Object[2];
 		arr[0]=passi;
 		arr[1]=id;
-		Server at = new Server(this, canacces_obj.class,false);
+		Server at = new Server(this, confirm_obj.class);
 		at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("confirmAcces",arr));
 	}
 }

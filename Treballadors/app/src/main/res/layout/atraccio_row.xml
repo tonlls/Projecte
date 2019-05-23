@@ -4,28 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/colorPrimaryDark"
+    android:layout_margin="10dp"
+    android:id="@+id/row">
 
     <ImageView
         android:id="@+id/foto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_launcher_background"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/nom"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/foto"
-        app:layout_constraintStart_toStartOf="@+id/foto"
+        app:layout_constraintStart_toEndOf="@id/foto"
+        app:layout_constraintTop_toTopOf="@+id/foto"
         tools:ignore="MissingConstraints" />
 
 </android.support.constraint.ConstraintLayout>
