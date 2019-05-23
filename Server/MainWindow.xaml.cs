@@ -24,36 +24,43 @@ namespace Server
 {
     public partial class MainWindow : Window
     {
+        bool started = false;
         DBInterface db;
         private Socket sock;
         private bool stoping = false;
         private int clients = 0;
-        private List<StopableThread> simulations=new List<StopableThread>();
+        private List<StopableThread> simulations = new List<StopableThread>();
 
         public MainWindow()
         {
             InitializeComponent();
             //var y=typeof(MySqlDriver.MySql).AssemblyQualifiedName;
-            db= DBFactory.getInstance("MySqlDriver.MySql, MySqlDriver");
+            db = DBFactory.getInstance("MySqlDriver.MySql, MySqlDriver");
             //var x=db.getInfo();
         }
         private void Start()
         {
-            log("Server starting...");
-            Task.Run(() =>
+            if (!started)
             {
-                start_server();
-                strat_simulation();
-            });
-            log("Server started...");
+                started = true;
+                log("Server starting...");
+                Task.Run(() =>
+                {
+                    start_simulation();
+                    start_server();
+                });
+                log("Server started...");
+            }
         }
 
-        private void strat_simulation()
+        private void start_simulation()
         {
-            List<info_atraccio> lst=db.getAtraccions();
-            foreach(info_atraccio a in lst)
+            List<info_atraccio> lst = db.getAtraccions();
+            foreach (info_atraccio a in lst)
             {
-                
+                var t = new StopableThread(a.temps_espera_minuts, a.capacitat, a.id, db);
+                simulations.Add(t);
+                t.Start();
             }
         }
 
@@ -94,35 +101,40 @@ namespace Server
 
         public void Stop()
         {
-            log("Stopping Server");
-            log("Stopping TCP/IP Server");
-            stoping = true;
-            log("Stopping Simulations");
-            foreach(StopableThread t in simulations)
+            if (started)
             {
-                t.Stop();
+                started = false;
+                log("Stopping Server");
+                log("Stopping TCP/IP Server");
+                stoping = true;
+                log("Stopping Simulations");
+                foreach (StopableThread t in simulations)
+                {
+                    t.Stop();
+                }
+                log("Simulations stoped");
+                while (clients > 0) ;
+                db.clear_sessions();
+                log("TCP/IP Server Stoped");
+                log("Server Stoped");
             }
-            log("Simulations stoped");
-            while (clients > 0) ;
-            log("TCP/IP Server Stoped");
-            log("Server Stoped");
         }
 
         private void client_atend(Socket handler)
         {
             log("client connected");
             clients++;
-            Request req=Recive(handler);
+            Request req = Recive(handler);
             Serializable res;
             switch (req.function)
             {
-                case "login":res=login(req);break;
-                case "getInfoParcs":res = getInfoParcs(req);break;
-                case "getInfoAtraccions": res=getinfoAtraccions(req);break;
-                case "getPassis": res = getPassis(req);break;
+                case "login": res = login(req); break;
+                case "getInfoParcs": res = getInfoParcs(req); break;
+                case "getInfoAtraccions": res = getinfoAtraccions(req); break;
+                case "getPassis": res = getPassis(req); break;
                 case "canAcces": res = canAcces(req); break;
                 case "confirmAcces": res = confirmAcces(req); break;
-                default:res = new error_obj(ERROR_CODES.INVALID_FUNCTION, "Unknown Function");break;
+                default: res = new error_obj(ERROR_CODES.INVALID_FUNCTION, "Unknown Function"); break;
             }
             handler.Send(res.serialize());
             handler.Shutdown(SocketShutdown.Both);
@@ -137,7 +149,7 @@ namespace Server
             {
                 return db.getInfoAtraccions(int.Parse(string.Format("{0}", req.args[0])));
             }
-            return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
+            return new error_obj(ERROR_CODES.INVALID_PARAMETERS, "Invalid Parameters");
         }
 
         private Serializable getInfoParcs(Request req)
@@ -152,7 +164,7 @@ namespace Server
 
                 return db.confirmarAcces(int.Parse(string.Format("{0}", req.args[0])), int.Parse(string.Format("{0}", req.args[1])));
             }
-            return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
+            return new error_obj(ERROR_CODES.INVALID_PARAMETERS, "Invalid Parameters");
         }
 
         private Serializable canAcces(Request req)
@@ -161,39 +173,39 @@ namespace Server
             {
                 return db.potAccedir(int.Parse(req.args[0].ToString()), int.Parse(req.args[1].ToString()));
             }
-            return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
+            return new error_obj(ERROR_CODES.INVALID_PARAMETERS, "Invalid Parameters");
         }
 
         private Serializable getPassis(Request req)
         {
-            if (req.args.Count() == 1 && req.args[0].GetType() == typeof(int))
+            if (req.args.Count() == 1 /*&& req.args[0].GetType() == typeof(int)*/)
             {
                 return db.getPassis(int.Parse(req.args[0].ToString()));
             }
-            return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
+            return new error_obj(ERROR_CODES.INVALID_PARAMETERS, "Invalid Parameters");
         }
 
         private Serializable login(Request req)
         {
-            if (req.args.Count() == 2&&req.args[0].GetType()==typeof(string)&&req.args[1].GetType()==typeof(string))
+            if (req.args.Count() == 2 /*&& req.args[0].GetType() == typeof(string) && req.args[1].GetType() == typeof(string)*/)
             {
-                return db.login(req.args[0].ToString(),req.args[1].ToString());
+                return db.login(req.args[0].ToString(), req.args[1].ToString());
             }
-            return new error_obj(ERROR_CODES.INVALID_PARAMETERS,"Invalid Parameters");
+            return new error_obj(ERROR_CODES.INVALID_PARAMETERS, "Invalid Parameters");
         }
-        private void Send(Socket sok,Serializable obj)
+        private void Send(Socket sok, Serializable obj)
         {
             sok.Send(obj.serialize());
         }
         private Request Recive(Socket handler)
         {
             int len = Serializable.HEADER_LENGTH;
-            byte[] buf= new byte[len];
-            handler.Receive(buf, len,SocketFlags.None);
+            byte[] buf = new byte[len];
+            handler.Receive(buf, len, SocketFlags.None);
             //var s=Encoding.ASCII.GetString(buf);
             len = BitConverter.ToInt32(buf, 0);
             byte[] bod = new byte[len];
-            handler.Receive(bod, len,SocketFlags.None);
+            handler.Receive(bod, len, SocketFlags.None);
             return (Request)Serializable.deserialize(bod);
         }
 

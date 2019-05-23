@@ -63,7 +63,41 @@ namespace MySqlDriver
         }
         public getpass_obj getPassis(int ses_id)
         {
-            throw new NotImplementedException();
+            using (var conn = new MySqlConnection(url))
+            using (var conn1 = new MySqlConnection(url))
+            {
+                List<passi_expres> passis = new List<passi_expres>();
+                int cli = sessions[ses_id];
+                conn.Open();
+                conn1.Open();
+                MySqlCommand com = new MySqlCommand("select p.id id,t.id t_id,t.nom t_nom,p.data data from pasi_expres p JOIN tipus_pasi t on t.id = p.tipus_id where client_id = @cli", conn);
+                MySqlCommand com1 = new MySqlCommand("select a.nom nom,e.nom estat,iu.num_usos usos ,ta.nom tipus from atraccio a JOIN estat_operatiu e on e.id = a.estat_actual_id JOIN info_utilitzacio iu on iu.atraccio_id = a.id and iu.pasi_id = @pas JOIN tipus_acces ta on ta.id = (select tipus_acces_id from tipus_acces_atraccio where tipus_pasi_id = @t_pas and atraccio_id = a.id) ", conn1);
+                DBUtils.CrearParametre("cli", cli, com);
+                var reader = com.ExecuteReader();
+                while (reader.Read())
+                {
+                    int id = reader.GetInt32("id");
+                    int tipus = reader.GetInt32("t_id");
+                    string tNom = reader.GetString("t_nom");
+                    DateTime data = reader.GetDateTime("data");
+                    List<atraccions_passi> atraccions = new List<atraccions_passi>();
+                    DBUtils.CrearParametre("pas", id, com1);
+                    DBUtils.CrearParametre("t_pas", tipus, com1);
+                    var reader1 = com1.ExecuteReader();
+                    while (reader1.Read())
+                    {
+                        string nom = reader1.GetString("nom");
+                        string estat = reader1.GetString("estat");
+                        int usos = reader1.GetInt32("usos");
+                        string t_acces = reader1.GetString("tipus");
+                        atraccions.Add(new atraccions_passi(usos, nom, estat, t_acces));
+                    }
+                    passis.Add(new passi_expres(id, tNom, data, atraccions));
+                    reader1.Close();
+                }
+                reader.Close();
+                return new getpass_obj(passis);
+            }
         }
         public canacces_obj potAccedir(int passi, int atraccio)
         {

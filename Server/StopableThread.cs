@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    internal class StopableThread 
+    public class StopableThread 
     {
         private static DBInterface _db;
         private Thread _thread;
@@ -18,9 +18,9 @@ namespace Server
         {
             _stop = true;
         }
-        protected StopableThread(int time,int capacity,int atraccio,DBInterface db)
+        public StopableThread(float time,int capacity,int atraccio,DBInterface db)
         {
-            _time = time;
+            _time =(int) time* 60000;
             _capacity = capacity;
             _atraccio = atraccio;
             _db = db;
