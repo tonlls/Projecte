@@ -1,12 +1,15 @@
 package com.app.socis;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TableLayout;
 
 import com.app.socis.input_obj.info_atraccions_obj;
 import com.app.socis.input_obj.info_parcs_obj;
@@ -19,11 +22,13 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements atraccioFragment.OnListFragmentInteractionListener,IActivity {
+	public boolean updating=false;
 	public List<parc> parcs;
-	public List<List<atraccio>> atraccions=new ArrayList<List<atraccio>>();
+	public HashMap<Integer,ArrayList<atraccio>> atraccions=new HashMap<Integer,ArrayList<atraccio>>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,37 +46,57 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 				.diskCacheFileCount(100)
 				.build();
 		ImageLoader.getInstance().init(config);
-		Server at = new Server(this, parc.class);
+		Server at = new Server(this, info_parcs_obj.class);
 		at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getInfoParcs",new Object[0]));
 		//pgrLoading.setVisibility(View.VISIBLE);
 		//((RecyclerView)findViewById(R.id.recicler)).setLayoutManager(new LinearLayoutManager(this));
 		//requestParcs();
-
 	}
-
 	@Override
-	public void setResult(Object o, Class c) {
+	public void setResult(Object o, Class c,int extra) {
 		if(c== info_parcs_obj.class){
 			parcs=((info_parcs_obj)o).parcs;
-			Server at = new Server(this, info_atraccions_obj.class);
-			Object[] arr=new Object[1];
+
 			for(parc p:parcs){
-				arr[0]=p.id;
+				Object[] arr=new Object[1];
+				Server at = new Server(this, info_atraccions_obj.class);
+				arr[0]=new Integer(p.id);
 				at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getInfoAtraccions",arr));
 			}
 		}
 		else if(c==info_atraccions_obj.class){
-			atraccions.add(((info_atraccions_obj)o).estats_atraccions);
+			info_atraccions_obj a=((info_atraccions_obj)o);
+			atraccions.put(extra,(ArrayList)a.estats_atraccions);
 			if(atraccions.size()==parcs.size()){
-				((ViewPager)findViewById(R.id.pager)).setAdapter(new PageAdapter(getSupportFragmentManager()));
+				((ViewPager)findViewById(R.id.pager)).setAdapter(new PageAdapter(getSupportFragmentManager(),parcs,atraccions));
+				((TabLayout)findViewById(R.id.tabL)).setupWithViewPager((ViewPager)findViewById(R.id.pager));
 			}
 		}
 	}
+	@Override
+	public void onListFragmentInteraction(atraccio a) {
+		Intent myIntent = new Intent(this, DetallActivity.class);
+		myIntent.putExtra("ATRACCIO",a);
+		this.startActivity(myIntent);
+	}
+
+	public void updateHash() {
+		notify();
+	}
 
 	private static class PageAdapter extends FragmentPagerAdapter{
-		private final List<List<atraccio>> atraccions;
+		private final HashMap<Integer, ArrayList<atraccio>> atraccions;
+		public void notifiChanges(){
+			for (int i=0;i<getCount();i++){
+				((atraccioFragment)getItem(i)).update();
+			}
+		}
+		public ArrayList<atraccio> getAtraccions(int parc) {
+			return atraccions.get(parc);
+		}
+
 		List<parc> parcs;
-		public PageAdapter(FragmentManager fm,List<parc> parcs,List<List<atraccio>> atrr) {
+		public PageAdapter(FragmentManager fm, List<parc> parcs, HashMap<Integer, ArrayList<atraccio>> atrr) {
 			super(fm);
 			this.parcs=parcs;
 			this.atraccions=atrr;
@@ -85,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 		@Override
 		public int getCount() {
 			return parcs.size();
+		}
+		public CharSequence getPageTitle(int position) {
+			return parcs.get(position).nom;
 		}
 	}
 }

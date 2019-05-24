@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28902.138
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entrades", "Entrades.csproj", "{0F0DED81-522A-4FAC-B082-18CD9638099C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F0DED81-522A-4FAC-B082-18CD9638099C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F0DED81-522A-4FAC-B082-18CD9638099C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F0DED81-522A-4FAC-B082-18CD9638099C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0DED81-522A-4FAC-B082-18CD9638099C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F2B6315-77E9-4B02-A8E0-B67A1A5EB02F}
+	EndGlobalSection
+EndGlobal

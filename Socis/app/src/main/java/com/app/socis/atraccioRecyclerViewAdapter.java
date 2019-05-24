@@ -1,29 +1,25 @@
 package com.app.socis;
 
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.app.socis.atraccioFragment.OnListFragmentInteractionListener;
-import com.app.socis.dummy.DummyContent.DummyItem;
-
-import java.util.List;
-
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+import com.app.socis.model.atraccio;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import java.util.ArrayList;
 public class atraccioRecyclerViewAdapter extends RecyclerView.Adapter<atraccioRecyclerViewAdapter.ViewHolder> {
 
-	private final List<DummyItem> mValues;
 	private final OnListFragmentInteractionListener mListener;
+	private ArrayList<atraccio> atraccions=new ArrayList<atraccio>();
 
-	public atraccioRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-		mValues = items;
-		mListener = listener;
+
+	public atraccioRecyclerViewAdapter(ArrayList<atraccio> atraccions, OnListFragmentInteractionListener mListener) {
+		this.mListener = mListener;
+		this.atraccions=atraccions;
 	}
 
 	@Override
@@ -35,17 +31,18 @@ public class atraccioRecyclerViewAdapter extends RecyclerView.Adapter<atraccioRe
 
 	@Override
 	public void onBindViewHolder(final ViewHolder holder, int position) {
-		holder.mItem = mValues.get(position);
-		holder.mIdView.setText(mValues.get(position).id);
-		holder.mContentView.setText(mValues.get(position).content);
+		atraccio a = atraccions.get(position);
+		holder.nom.setText(a.nom);
+		ImageLoader loader = ImageLoader.getInstance();
+		loader.displayImage(a.url_foto, holder.foto);
 
-		holder.mView.setOnClickListener(new View.OnClickListener() {
+		holder.row.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (null != mListener) {
+				if (mListener!=null) {
 					// Notify the active callbacks interface (the activity, if the
 					// fragment is attached to one) that an item has been selected.
-					//mListener.onListFragmentInteraction(holder.mItem);
+					mListener.onListFragmentInteraction(holder.a);
 				}
 			}
 		});
@@ -53,25 +50,25 @@ public class atraccioRecyclerViewAdapter extends RecyclerView.Adapter<atraccioRe
 
 	@Override
 	public int getItemCount() {
-		return mValues.size();
+
+		return atraccions.size();
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder {
-		public final View mView;
-		public final TextView mIdView;
-		public final TextView mContentView;
-		public DummyItem mItem;
+		atraccio a;
+		ConstraintLayout row;
+		TextView nom;
+		TextView temps;
+		ImageView foto;
+		ImageView estat_foto;
 
 		public ViewHolder(View view) {
 			super(view);
-			mView = view;
-			mIdView = (TextView) view.findViewById(R.id.item_number);
-			mContentView = (TextView) view.findViewById(R.id.content);
-		}
-
-		@Override
-		public String toString() {
-			return super.toString() + " '" + mContentView.getText() + "'";
+			row=view.findViewById(R.id.row);
+			nom=view.findViewById(R.id.nom);
+			temps=view.findViewById(R.id.temps);
+			foto=view.findViewById(R.id.foto);
+			estat_foto=view.findViewById(R.id.estat_foto);
 		}
 	}
 }
