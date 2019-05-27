@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 	public List<parc> parcs;
 	public HashMap<Integer,ArrayList<atraccio>> atraccions=new HashMap<Integer,ArrayList<atraccio>>();
 	private UpdateTask ut;
-	private MyFuckingPageAdapter pa;
+	private MyPageAdapter pa;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 			info_atraccions_obj a=((info_atraccions_obj)o);
 			atraccions.put(extra,(ArrayList)a.estats_atraccions);
 			if(atraccions.size()==parcs.size()){
-				pa=new MyFuckingPageAdapter(getSupportFragmentManager(),parcs,atraccions);
+				pa=new MyPageAdapter(getSupportFragmentManager(),parcs,atraccions);
 				((ViewPager)findViewById(R.id.pager)).setAdapter(pa);
 				((TabLayout)findViewById(R.id.tabL)).setupWithViewPager((ViewPager)findViewById(R.id.pager));
 				ut=new UpdateTask(this);
@@ -91,11 +91,12 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 		pa.notifiChanges();
 	}
 
-	public static class MyFuckingPageAdapter extends FragmentPagerAdapter{
+	public static class MyPageAdapter extends FragmentPagerAdapter{
 		private final HashMap<Integer, ArrayList<atraccio>> atraccions;
+		List<atraccioFragment> fragments=new ArrayList<atraccioFragment>();
 		public void notifiChanges(){
-			for (int i=0;i<getCount();i++){
-				((atraccioFragment)getItem(i)).update();
+			for (atraccioFragment f:fragments){
+				f.update();
 			}
 		}
 		public ArrayList<atraccio> getAtraccions(int parc) {
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 		}
 
 		List<parc> parcs;
-		public MyFuckingPageAdapter(FragmentManager fm, List<parc> parcs, HashMap<Integer, ArrayList<atraccio>> atrr) {
+		public MyPageAdapter(FragmentManager fm, List<parc> parcs, HashMap<Integer, ArrayList<atraccio>> atrr) {
 			super(fm);
 			this.parcs=parcs;
 			this.atraccions=atrr;
@@ -111,7 +112,10 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 
 		@Override
 		public Fragment getItem(int i) {
-			return atraccioFragment.newInstance(parcs.get(i),atraccions.get(parcs.get(i).id));
+			parc p=parcs.get(i);
+			atraccioFragment ff=atraccioFragment.newInstance(p,atraccions);
+			fragments.add(ff);
+			return ff;
 		}
 
 		@Override

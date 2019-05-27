@@ -11,15 +11,19 @@ import com.app.socis.atraccioFragment.OnListFragmentInteractionListener;
 import com.app.socis.model.atraccio;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 public class atraccioRecyclerViewAdapter extends RecyclerView.Adapter<atraccioRecyclerViewAdapter.ViewHolder> {
 
 	private final OnListFragmentInteractionListener mListener;
-	private ArrayList<atraccio> atraccions=new ArrayList<atraccio>();
+	private HashMap<Integer,ArrayList<atraccio>> atraccions;
+	int parcid;
 
 
-	public atraccioRecyclerViewAdapter(ArrayList<atraccio> atraccions, OnListFragmentInteractionListener mListener) {
+	public atraccioRecyclerViewAdapter(HashMap<Integer,ArrayList<atraccio>> atraccions,int parcid, OnListFragmentInteractionListener mListener) {
 		this.mListener = mListener;
 		this.atraccions=atraccions;
+		this.parcid=parcid;
 	}
 
 	@Override
@@ -31,17 +35,21 @@ public class atraccioRecyclerViewAdapter extends RecyclerView.Adapter<atraccioRe
 
 	@Override
 	public void onBindViewHolder(final ViewHolder holder, int position) {
-		atraccio a = atraccions.get(position);
+		atraccio a = atraccions.get(parcid).get(position);
+		holder.a=a;
 		holder.nom.setText(a.nom);
 		ImageLoader loader = ImageLoader.getInstance();
 		loader.displayImage(a.url_foto, holder.foto);
 		holder.temps.setText(a.temps_espera_minuts+"");
+		switch(a.codi_estat){
+			case 1: loader.displayImage("drawable://" + R.drawable.ok, holder.estat_foto);break;
+			case 2: loader.displayImage("drawable://" + R.drawable.error, holder.estat_foto);break;
+			case 3:case 4: loader.displayImage("drawable://" + R.drawable.forbbiden, holder.estat_foto);break;
+		}
 		holder.row.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mListener!=null) {
-					// Notify the active callbacks interface (the activity, if the
-					// fragment is attached to one) that an item has been selected.
 					mListener.onListFragmentInteraction(holder.a);
 				}
 			}
@@ -50,7 +58,7 @@ public class atraccioRecyclerViewAdapter extends RecyclerView.Adapter<atraccioRe
 
 	@Override
 	public int getItemCount() {
-		return atraccions.size();
+		return atraccions.get(parcid).size();
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder {

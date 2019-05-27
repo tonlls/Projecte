@@ -10,18 +10,20 @@ import android.view.ViewGroup;
 import com.app.socis.model.atraccio;
 import com.app.socis.model.parc;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 public class atraccioFragment extends Fragment {
 
 	public static final String ATRACCIONS = "ATRACCIONS";
 	private OnListFragmentInteractionListener mListener;
-	private ArrayList<atraccio> atraccions;
+	private HashMap<Integer,ArrayList<atraccio>> atraccions;
 	private parc parc;
 	private atraccioRecyclerViewAdapter adapt;
 
 	public atraccioFragment() {
 	}
 
-	public static atraccioFragment newInstance(parc p, ArrayList<atraccio> a) {
+	public static atraccioFragment newInstance(parc p, HashMap<Integer,ArrayList<atraccio>> a) {
 		atraccioFragment fragment = new atraccioFragment();
 		Bundle args = new Bundle();
 		args.putSerializable("PARC",p);
@@ -35,7 +37,7 @@ public class atraccioFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (getArguments() != null) {
-			atraccions= (ArrayList<atraccio>) getArguments().getSerializable(ATRACCIONS);
+			atraccions= (HashMap<Integer,ArrayList<atraccio>>) getArguments().getSerializable(ATRACCIONS);
 			parc= (parc) getArguments().getSerializable("PARC");
 			//mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 		}
@@ -51,7 +53,7 @@ public class atraccioFragment extends Fragment {
 			Context context = view.getContext();
 			RecyclerView recyclerView = (RecyclerView) view;
 			recyclerView.setLayoutManager(new LinearLayoutManager(context));
-			this.adapt=new atraccioRecyclerViewAdapter(atraccions, mListener);
+			this.adapt=new atraccioRecyclerViewAdapter(atraccions,parc.id, mListener);
 			recyclerView.setAdapter(this.adapt);
 		//}
 		return view;
