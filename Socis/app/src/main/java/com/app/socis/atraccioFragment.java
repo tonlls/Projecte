@@ -12,6 +12,7 @@ import com.app.socis.model.parc;
 import java.util.ArrayList;
 public class atraccioFragment extends Fragment {
 
+	public static final String ATRACCIONS = "ATRACCIONS";
 	private OnListFragmentInteractionListener mListener;
 	private ArrayList<atraccio> atraccions;
 	private parc parc;
@@ -24,7 +25,7 @@ public class atraccioFragment extends Fragment {
 		atraccioFragment fragment = new atraccioFragment();
 		Bundle args = new Bundle();
 		args.putSerializable("PARC",p);
-		args.putSerializable("ATRACCIONS",a);
+		args.putSerializable(ATRACCIONS,a);
 		//args.putInt(ARG_COLUMN_COUNT, columnCount);
 		fragment.setArguments(args);
 		return fragment;
@@ -34,7 +35,7 @@ public class atraccioFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (getArguments() != null) {
-			atraccions= (ArrayList<atraccio>) getArguments().getSerializable("ATRACCIONS");
+			atraccions= (ArrayList<atraccio>) getArguments().getSerializable(ATRACCIONS);
 			parc= (parc) getArguments().getSerializable("PARC");
 			//mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 		}
@@ -46,13 +47,13 @@ public class atraccioFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_atraccio_list, container, false);
 
 		// Set the adapter
-		if (view instanceof RecyclerView) {
+		//if (view instanceof RecyclerView) {
 			Context context = view.getContext();
 			RecyclerView recyclerView = (RecyclerView) view;
 			recyclerView.setLayoutManager(new LinearLayoutManager(context));
 			this.adapt=new atraccioRecyclerViewAdapter(atraccions, mListener);
 			recyclerView.setAdapter(this.adapt);
-		}
+		//}
 		return view;
 	}
 	@Override
@@ -72,6 +73,7 @@ public class atraccioFragment extends Fragment {
 	}
 
 	public void update() {
+		if(adapt!=null)
 		adapt.notifyDataSetChanged();
 	}
 

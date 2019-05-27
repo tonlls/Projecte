@@ -17,9 +17,11 @@ namespace DBBasic
         getpass_obj getPassis(int ses_id);
         canacces_obj potAccedir(int passi, int atraccio);
         confirm_obj confirmarAcces(int passi, int atraccio);
-
+        // pel servidor, per la simulació
         List<info_atraccio> getAtraccions();
         int getCua(int atraccio);
         void updateCuaAtraccio(int atraccio,int cua);
+        // per la app WPF de venta d'entrades
+        List<preu> getPreus();
     }
 }

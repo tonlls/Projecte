@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 	public boolean updating=false;
 	public List<parc> parcs;
 	public HashMap<Integer,ArrayList<atraccio>> atraccions=new HashMap<Integer,ArrayList<atraccio>>();
+	private UpdateTask ut;
+	private MyFuckingPageAdapter pa;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,8 +72,11 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 			info_atraccions_obj a=((info_atraccions_obj)o);
 			atraccions.put(extra,(ArrayList)a.estats_atraccions);
 			if(atraccions.size()==parcs.size()){
-				((ViewPager)findViewById(R.id.pager)).setAdapter(new PageAdapter(getSupportFragmentManager(),parcs,atraccions));
+				pa=new MyFuckingPageAdapter(getSupportFragmentManager(),parcs,atraccions);
+				((ViewPager)findViewById(R.id.pager)).setAdapter(pa);
 				((TabLayout)findViewById(R.id.tabL)).setupWithViewPager((ViewPager)findViewById(R.id.pager));
+				ut=new UpdateTask(this);
+				ut.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,atraccions);
 			}
 		}
 	}
@@ -81,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 	}
 
 	public void updateHash() {
-		notify();
+		pa.notifiChanges();
 	}
 
-	private static class PageAdapter extends FragmentPagerAdapter{
+	public static class MyFuckingPageAdapter extends FragmentPagerAdapter{
 		private final HashMap<Integer, ArrayList<atraccio>> atraccions;
 		public void notifiChanges(){
 			for (int i=0;i<getCount();i++){
@@ -96,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 		}
 
 		List<parc> parcs;
-		public PageAdapter(FragmentManager fm, List<parc> parcs, HashMap<Integer, ArrayList<atraccio>> atrr) {
+		public MyFuckingPageAdapter(FragmentManager fm, List<parc> parcs, HashMap<Integer, ArrayList<atraccio>> atrr) {
 			super(fm);
 			this.parcs=parcs;
 			this.atraccions=atrr;
@@ -104,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements atraccioFragment.
 
 		@Override
 		public Fragment getItem(int i) {
-			return atraccioFragment.newInstance(parcs.get(i),atraccions.get(i));
+			return atraccioFragment.newInstance(parcs.get(i),atraccions.get(parcs.get(i).id));
 		}
 
 		@Override

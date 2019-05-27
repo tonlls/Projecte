@@ -19,10 +19,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="11*"></RowDefinition>
         </Grid.RowDefinitions>
-        <RichTextBox IsReadOnly="True" Name="log_tb" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3"></RichTextBox>
+        <RichTextBox IsReadOnly="True" Name="log_tb" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4"></RichTextBox>
         <Button Grid.Column="1" Grid.Row="0" Name="start" Click="Start_Click">Start</Button>
         <Button Grid.Column="1" Grid.Row="1" Name="stop" Click="Stop_Click">Stop</Button>
+        <Button Grid.Column="1" Grid.Row="2" Name="clear" Click="Clear_Click">Clear</Button>
     </Grid>
 </Window>

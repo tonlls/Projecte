@@ -229,7 +229,7 @@ namespace MySqlDriver
                 conn.Open();
                 var res = new List<info_atraccio>();
                 //MySqlCommand com = new MySqlCommand("SELECT a.id,a.nom,a.url_foto,p.nom nom_parc,p.url_foto foto_parc,a.estat_actual_id,(a.clients_cua/a.capacitat_maxima_ronda)*a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a, parc p, zona z WHERE a.zona_id = z.id and a.parc_id = z.parc_id and p.id = z.parc_id", conn);
-                MySqlCommand com = new MySqlCommand("SELECT a.id,a.parc_id parc_id,a.nom,a.url_foto,a.estat_actual_id,(a.clients_cua/a.capacitat_maxima_ronda)*a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a", conn);
+                MySqlCommand com = new MySqlCommand("SELECT a.id,a.parc_id parc_id,a.nom,a.url_foto,a.estat_actual_id,a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a", conn);
                 using (var reader = com.ExecuteReader())
                 {
                     while (reader.Read())

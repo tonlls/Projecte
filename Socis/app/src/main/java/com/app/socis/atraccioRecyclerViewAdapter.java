@@ -35,7 +35,7 @@ public class atraccioRecyclerViewAdapter extends RecyclerView.Adapter<atraccioRe
 		holder.nom.setText(a.nom);
 		ImageLoader loader = ImageLoader.getInstance();
 		loader.displayImage(a.url_foto, holder.foto);
-
+		holder.temps.setText(a.temps_espera_minuts+"");
 		holder.row.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -50,7 +50,6 @@ public class atraccioRecyclerViewAdapter extends RecyclerView.Adapter<atraccioRe
 
 	@Override
 	public int getItemCount() {
-
 		return atraccions.size();
 	}
 

@@ -12,16 +12,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class UpdateTask extends AsyncTask<HashMap<Integer,ArrayList<atraccio>>,List<ArrayList<atraccio>>,Object> {
+public class UpdateTask extends AsyncTask<HashMap<Integer,ArrayList<atraccio>>,List<ArrayList<atraccio>>,Void> {
 	MainActivity ma;
+	private boolean stop=false;
 
 	public UpdateTask(MainActivity ma) {
 		this.ma = ma;
 	}
 
 	@Override
-	protected Object doInBackground(HashMap<Integer,ArrayList<atraccio>>... hash) {
-		while(true){
+	protected Void doInBackground(HashMap<Integer,ArrayList<atraccio>>... hash) {
+		while(!stop){
 
 			try {
 				Thread.sleep(5*1000);
@@ -34,15 +35,13 @@ public class UpdateTask extends AsyncTask<HashMap<Integer,ArrayList<atraccio>>,L
 				info_atraccions_obj at = (info_atraccions_obj) Server.doRequest(new Request("getInfoAtraccions",arr), info_atraccions_obj.class,true);
 				hash[0].put(p, (ArrayList<atraccio>) at.estats_atraccions);
 			}
+			publishProgress();
 		}
-		//return null;
+		return null;
 	}
-
-	@Override
-	protected void onPostExecute(Object aVoid) {
-		super.onPostExecute(aVoid);
+	public void Stop(){
+		stop=true;
 	}
-
 	@Override
 	protected void onProgressUpdate(List<ArrayList<atraccio>>... values) {
 		super.onProgressUpdate(values);

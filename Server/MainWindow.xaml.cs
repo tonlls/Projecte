@@ -226,5 +226,10 @@ namespace Server
         {
             Stop();
         }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            log_tb.Document.Blocks.Clear();
+        }
     }
 }
