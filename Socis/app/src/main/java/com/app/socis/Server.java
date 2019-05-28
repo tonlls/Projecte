@@ -2,8 +2,6 @@ package com.app.socis;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.app.socis.model.Serializable;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

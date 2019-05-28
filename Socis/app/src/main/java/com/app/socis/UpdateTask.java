@@ -1,12 +1,9 @@
 package com.app.socis;
 
-import android.app.Activity;
 import android.os.AsyncTask;
-import android.support.v4.view.ViewPager;
 
 import com.app.socis.input_obj.info_atraccions_obj;
 import com.app.socis.model.atraccio;
-import com.app.socis.model.parc;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.app.socis.model;
+package com.app.socis;
 
 import com.google.gson.Gson;
 

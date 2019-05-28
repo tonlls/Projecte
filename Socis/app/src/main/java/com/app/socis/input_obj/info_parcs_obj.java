@@ -1,6 +1,6 @@
 package com.app.socis.input_obj;
 
-import com.app.socis.model.Serializable;
+import com.app.socis.Serializable;
 import com.app.socis.model.parc;
 
 import java.util.List;

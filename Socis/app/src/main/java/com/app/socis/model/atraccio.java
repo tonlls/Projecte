@@ -1,5 +1,7 @@
 package com.app.socis.model;
 
+import com.app.socis.Serializable;
+
 public class atraccio extends Serializable {
 	public int id;
 	public String nom;

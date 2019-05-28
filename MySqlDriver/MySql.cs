@@ -273,5 +273,18 @@ namespace MySqlDriver
                 return (int)com.ExecuteScalar();
             }
         }
+
+        public List<preu> getPreus()
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("SELECT clients_cua FROM atraccio WHERE id=@atraccio", conn);
+                //new preu()
+                return null;
+                //DBUtils.CrearParametre("atraccio", atraccio, com);
+                //return (int)com.ExecuteScalar();
+            }
+        }
     }
 }

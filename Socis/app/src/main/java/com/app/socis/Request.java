@@ -1,7 +1,5 @@
 package com.app.socis;
 
-import com.app.socis.model.Serializable;
-
 public class Request extends Serializable {
 	public String function;
 	public Object[] args;
