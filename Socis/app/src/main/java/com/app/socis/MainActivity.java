@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,IActivity, atraccioFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,IActivity, atraccioFragment.OnListFragmentInteractionListener, SearchView.OnQueryTextListener {
 	public boolean updating=false;
 	public List<parc> parcs;
 	public HashMap<Integer,ArrayList<atraccio>> atraccions=new HashMap<Integer,ArrayList<atraccio>>();
@@ -73,15 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		Server at = new Server(this, info_parcs_obj.class);
 		at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getInfoParcs",new Object[0]));
 	}
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			final String query = intent.getStringExtra(SearchManager.QUERY);
-			//TODO only filter the actual item
-			//for ()
-		}
-	}
+
 	@Override
 	public void onBackPressed() {
 		DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -96,61 +88,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-		if (searchView != null) {
-			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-			searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-				@Override
-				public boolean onClose() {
-					//TODO: Reset your views
-					return false;
-				}
-			});
-			searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-				@Override
-				public boolean onQueryTextSubmit(String s) {
-					return false; //do the default
-				}
+		SearchManager searchManager = (SearchManager)
+				getSystemService(Context.SEARCH_SERVICE);
+		MenuItem searchMenuItem = menu.findItem(R.id.search);
+		SearchView searchView = (SearchView) searchMenuItem.getActionView();
 
-				@Override
-				public boolean onQueryTextChange(String s) {
-					//NOTE: doing anything here is optional, onNewIntent is the important bit
-					if (s.length() > 1) { //2 chars or more
-						//TODO: filter/return results
-					} else if (s.length() == 0) {
-						//TODO: reset the displayed data
-					}
-					return false;
-				}
-
-			});
-		}
+		searchView.setSearchableInfo(searchManager.
+				getSearchableInfo(getComponentName()));
+		searchView.setOnQueryTextListener(this);
 		return true;
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
 
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
-	@SuppressWarnings("StatementWithEmptyBody")
 	@Override
 	public boolean onNavigationItemSelected(MenuItem item) {
 		// Handle navigation view item clicks here.
 		int id = item.getItemId();
 
 		if (id == R.id.nav_passis) {
+			ut.Stop();
 			Intent intent = new Intent(this, PassisActivity.class);
 			startActivity(intent);
 		} else if (id == R.id.nav_atraccions) {
@@ -159,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		}
 
 		DrawerLayout drawer = findViewById(R.id.drawer_layout);
-		drawer.closeDrawer(GravityCompat.START);
+		//drawer.closeDrawer(GravityCompat.START);
 		return true;
 	}
 	@Override
@@ -195,6 +151,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 	public void updateHash() {
 		pa.notifiChanges();
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String s) {
+		if(s.length()!=0) {
+			ut.Stop();
+			for (int i : atraccions.keySet()) {
+				ArrayList<atraccio> a = new ArrayList<atraccio>();
+				for (atraccio at : atraccions.get(i)) {
+					if (at.nom.contains(s)) a.add(at);
+				}
+				atraccions.put(i, a);
+			}
+			updateHash();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(String s) {
+		if (s.length()==0)ut.Play();
+		return false;
 	}
 
 	public static class MyPageAdapter extends FragmentPagerAdapter {

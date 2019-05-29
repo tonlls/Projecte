@@ -46,16 +46,17 @@ namespace MySqlDriver
             using (var conn = new MySqlConnection(url))
             {
                 conn.Open();
-                MySqlCommand com = new MySqlCommand("SELECT contrasenya,id FROM client WHERE nif=@nif'", conn);
+                MySqlCommand com = new MySqlCommand("SELECT contrasenya,id FROM client WHERE nif=@nif", conn);
                 DBUtils.CrearParametre("nif", user, com);
-                var reader = com.ExecuteReader();
-                reader.Read();
-                string pas = reader.GetString("contrasenya");
-                int id = reader.GetInt32("id");
+                var rd = com.ExecuteReader();
+                String s =com.CommandText;
+                rd.Read();
+                int id = rd.GetInt32("id");
+                string pas = rd.GetString("contrasenya");
                 if (pass == pas)
                 {
                     if (sessions.ContainsKey(id)) return new login_obj(sessions[id]);
-                    sessions.Add(id, SESS_ID);
+                    sessions.Add(SESS_ID,id);
                     return new login_obj(SESS_ID++);
                 }
                 return new login_obj(-1);
@@ -70,8 +71,8 @@ namespace MySqlDriver
                 int cli = sessions[ses_id];
                 conn.Open();
                 conn1.Open();
-                MySqlCommand com = new MySqlCommand("select p.id id,t.id t_id,t.nom t_nom,p.data data from pasi_expres p JOIN tipus_pasi t on t.id = p.tipus_id where client_id = @cli", conn);
-                MySqlCommand com1 = new MySqlCommand("select a.nom nom,e.nom estat,iu.num_usos usos ,ta.nom tipus from atraccio a JOIN estat_operatiu e on e.id = a.estat_actual_id JOIN info_utilitzacio iu on iu.atraccio_id = a.id and iu.pasi_id = @pas JOIN tipus_acces ta on ta.id = (select tipus_acces_id from tipus_acces_atraccio where tipus_pasi_id = @t_pas and atraccio_id = a.id) ", conn1);
+                MySqlCommand com = new MySqlCommand("select p.id id,t.id t_id,t.nom t_nom,p.data data from pasi_expres p JOIN tipus_pasi_expres t on t.id = p.tipus_id where client_id = @cli", conn);
+                MySqlCommand com1 = new MySqlCommand("select a.nom nom,e.nom estat,iu.num_usos usos ,ta.nom tipus from atraccio a JOIN estat_operatiu e on e.id = a.estat_actual_id LEFT JOIN info_utilitzacio iu on iu.atraccio_id = a.id and iu.pasi_id = @pas LEFT JOIN tipus_acces ta on ta.id = (select tipus_acces_id from tipus_acces_atraccio where tipus_pasi_id = @t_pas and atraccio_id = a.id) ", conn1);
                 DBUtils.CrearParametre("cli", cli, com);
                 var reader = com.ExecuteReader();
                 while (reader.Read())
@@ -81,6 +82,7 @@ namespace MySqlDriver
                     string tNom = reader.GetString("t_nom");
                     DateTime data = reader.GetDateTime("data");
                     List<atraccions_passi> atraccions = new List<atraccions_passi>();
+                    com1.Parameters.Clear();
                     DBUtils.CrearParametre("pas", id, com1);
                     DBUtils.CrearParametre("t_pas", tipus, com1);
                     var reader1 = com1.ExecuteReader();
@@ -88,7 +90,8 @@ namespace MySqlDriver
                     {
                         string nom = reader1.GetString("nom");
                         string estat = reader1.GetString("estat");
-                        int usos = reader1.GetInt32("usos");
+                        int usos = reader1.IsDBNull(2)?0:reader1.GetInt32("usos");
+                        
                         string t_acces = reader1.GetString("tipus");
                         atraccions.Add(new atraccions_passi(usos, nom, estat, t_acces));
                     }
@@ -276,14 +279,32 @@ namespace MySqlDriver
 
         public List<preu> getPreus()
         {
+            List<preu> ret = new List<preu>();
             using (var conn = new MySqlConnection(url))
+            using (var conn1 = new MySqlConnection(url))
             {
                 conn.Open();
-                MySqlCommand com = new MySqlCommand("SELECT clients_cua FROM atraccio WHERE id=@atraccio", conn);
-                //new preu()
-                return null;
-                //DBUtils.CrearParametre("atraccio", atraccio, com);
-                //return (int)com.ExecuteScalar();
+                MySqlCommand com = new MySqlCommand("SELECT id,dies,preu_adult,preu_nen_senior,preu_discapacitat FROM preu", conn);
+                var re=com.ExecuteReader();
+                while (re.Read())
+                {
+                    List<int> parcs = new List<int>();
+                    int id=re.GetInt32("id");
+                    MySqlCommand com1 = new MySqlCommand("SELECT parc_id FROM preu_parc WHERE preu_id=@preu", conn1);
+                    DBUtils.CrearParametre("preu", id, com1);
+                    var re1 = com1.ExecuteReader();
+                    while (re1.Read())
+                    {
+                        parcs.Add(re1.GetInt32("parc_id"));
+                    }
+                    ret.Add(new preu(id,
+                                     re.GetInt32("dies"),
+                                     re.GetFloat("preu_adult"),
+                                     re.GetFloat("preu_discapacitat"),
+                                     re.GetFloat("preu_nen_senior"),
+                                     parcs));
+                }
+                return ret;
             }
         }
     }

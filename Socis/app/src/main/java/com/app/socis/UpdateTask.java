@@ -12,6 +12,8 @@ import java.util.List;
 public class UpdateTask extends AsyncTask<HashMap<Integer,ArrayList<atraccio>>,List<ArrayList<atraccio>>,Void> {
 	MainActivity ma;
 	private boolean stop=false;
+	private boolean paused=false;
+	private HashMap<Integer, ArrayList<atraccio>> Mhash;
 
 	public UpdateTask(MainActivity ma) {
 		this.ma = ma;
@@ -19,6 +21,7 @@ public class UpdateTask extends AsyncTask<HashMap<Integer,ArrayList<atraccio>>,L
 
 	@Override
 	protected Void doInBackground(HashMap<Integer,ArrayList<atraccio>>... hash) {
+		this.Mhash=hash[0];
 		while(!stop){
 
 			try {
@@ -26,15 +29,26 @@ public class UpdateTask extends AsyncTask<HashMap<Integer,ArrayList<atraccio>>,L
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			for(int p:hash[0].keySet()){
-				Object[] arr=new Object[1];
-				arr[0]=p;
-				info_atraccions_obj at = (info_atraccions_obj) Server.doRequest(new Request("getInfoAtraccions",arr), info_atraccions_obj.class,true);
-				hash[0].put(p, (ArrayList<atraccio>) at.estats_atraccions);
-			}
-			publishProgress();
+			execute();
 		}
 		return null;
+	}
+
+	private void execute() {
+		for(int p: Mhash.keySet()){
+			Object[] arr=new Object[1];
+			arr[0]=p;
+			info_atraccions_obj at = (info_atraccions_obj) Server.doRequest(new Request("getInfoAtraccions",arr), info_atraccions_obj.class,true);
+			if(at.estats_atraccions!=null)
+				Mhash.put(p, (ArrayList<atraccio>) at.estats_atraccions);
+		}
+		publishProgress();
+	}
+
+	public void Pause(){paused=true;}
+	public void Play(){
+		paused=false;
+		//execute();
 	}
 	public void Stop(){
 		stop=true;
@@ -42,7 +56,6 @@ public class UpdateTask extends AsyncTask<HashMap<Integer,ArrayList<atraccio>>,L
 	@Override
 	protected void onProgressUpdate(List<ArrayList<atraccio>>... values) {
 		super.onProgressUpdate(values);
-		ma.updateHash();
-
+		if (!paused)ma.updateHash();
 	}
 }

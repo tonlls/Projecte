@@ -23,5 +23,6 @@ namespace DBBasic
         void updateCuaAtraccio(int atraccio,int cua);
         // per la app WPF de venta d'entrades
         List<preu> getPreus();
+        //info_atraccio getAtraccio(int id);
     }
 }

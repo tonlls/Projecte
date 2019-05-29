@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Incidencia.findAll", query = "SELECT i FROM Incidencia i"),
     @NamedQuery(name = "Incidencia.findById", query = "SELECT i FROM Incidencia i WHERE i.incidenciaPK.id = :id"),
+    @NamedQuery(name = "Incidencia.findByOberta", query = "SELECT i FROM Incidencia i WHERE i.oberta = :oberta"),
     @NamedQuery(name = "Incidencia.findByAtraccioId", query = "SELECT i FROM Incidencia i WHERE i.incidenciaPK.atraccioId = :atraccioId"),
     @NamedQuery(name = "Incidencia.findByDataInici", query = "SELECT i FROM Incidencia i WHERE i.dataInici = :dataInici"),
     @NamedQuery(name = "Incidencia.findByDataFi", query = "SELECT i FROM Incidencia i WHERE i.dataFi = :dataFi"),
@@ -40,6 +41,9 @@ public class Incidencia implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected IncidenciaPK incidenciaPK;
+    @Basic(optional = false)
+    @Column(name = "oberta")
+    private boolean oberta;
     @Basic(optional = false)
     @Column(name = "data_inici")
     @Temporal(TemporalType.TIMESTAMP)
@@ -66,8 +70,9 @@ public class Incidencia implements Serializable {
         this.incidenciaPK = incidenciaPK;
     }
 
-    public Incidencia(IncidenciaPK incidenciaPK, Date dataInici) {
+    public Incidencia(IncidenciaPK incidenciaPK, boolean oberta, Date dataInici) {
         this.incidenciaPK = incidenciaPK;
+        this.oberta = oberta;
         this.dataInici = dataInici;
     }
 
@@ -81,6 +86,14 @@ public class Incidencia implements Serializable {
 
     public void setIncidenciaPK(IncidenciaPK incidenciaPK) {
         this.incidenciaPK = incidenciaPK;
+    }
+
+    public boolean getOberta() {
+        return oberta;
+    }
+
+    public void setOberta(boolean oberta) {
+        this.oberta = oberta;
     }
 
     public Date getDataInici() {

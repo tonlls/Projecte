@@ -5,14 +5,22 @@
  */
 package incidencies.app;
 
+import java.io.IOException;
+
 /**
  *
  * @author tonll
  */
-class PersistenceException extends Exception {
+public class PersistenceException extends Exception {
 
     PersistenceException(String string,Exception ex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println(string+ex);
+        ex.printStackTrace();
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    PersistenceException(String string) {
+        System.out.println(string);
     }
     
 }

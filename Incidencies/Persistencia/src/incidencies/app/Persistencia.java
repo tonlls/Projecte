@@ -11,10 +11,10 @@ import java.util.List;
  *
  * @author tonll
  */
-public interface Persistence {
-    public void addIncidencia(int atraccioId);
-    public void updateIncidencia(int atraccioId);
-    public void closeIncidencia(int atraccioId);
+public interface Persistencia {
+    public void addIncidencia(Incidencia i);
+    public void updateIncidencia(Incidencia i);
+    public void closeIncidencia(Incidencia i);
     public List<Incidencia> getIncidencies(int atraccioId);
     public List<Atraccio> getAtraccions();
     public void updateCua(int atraccioId);

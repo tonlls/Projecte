@@ -91,6 +91,7 @@ CREATE TABLE atraccio(
 
 CREATE TABLE incidencia(
 	id INT,
+	oberta BOOLEAN NOT NULL DEFAULT FALSE,
 	atraccio_id INT,
 	estat_operatiu_id INT,
 	data_inici DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
