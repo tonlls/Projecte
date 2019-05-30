@@ -67,7 +67,7 @@ public class Atraccio implements Serializable {
     private Integer alçadaMinimaAcompanyat;
     @Column(name = "al\u00e7ada_minima")
     private Integer alçadaMinima;
-    @OneToMany(mappedBy = "atraccioId")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "atraccioId")
     private List<Incidencia> incidenciaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "atraccio")
     private List<TipusAccesAtraccio> tipusAccesAtraccioList;

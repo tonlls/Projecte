@@ -7,6 +7,7 @@ package incidencies.app;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import javax.persistence.EntityManager;
@@ -48,19 +49,29 @@ public class PersistenciaMySql implements Persistencia{
         } catch (javax.persistence.PersistenceException ex) {
             throw new PersistenceException("Problemes en crear l'EntityManager", ex);
         }
+        //emf.
     }
     @Override
     public void addIncidencia(Incidencia i){
         em.getTransaction().begin();
         em.persist(i);
         em.getTransaction().commit();
+        Atraccio a=i.getAtraccioId();
+        em.getTransaction().begin();
+        em.persist(a);
+        a.setIncidenciaId(i);
+        a.setEstatActualId(i.getEstatOperatiuId());
+        em.getTransaction().commit();
+        em.refresh(a);
     }
     @Override
     public void updateIncidencia(Incidencia i){
         em.getTransaction().begin();
         Incidencia in=em.find(Incidencia.class,i.getId());
-        
-       //em.persist(this);
+        in.setEstatOperatiuId(i.getEstatOperatiuId());
+        em.persist(in);
+        em.getTransaction().commit();
+        em.flush();
     }
     @Override
     public List<Atraccio> getAtraccions(){
@@ -96,6 +107,7 @@ public class PersistenciaMySql implements Persistencia{
     public void closeIncidencia(Incidencia i){
         em.getTransaction().begin();
         em.persist(i);
+        i.setDataFi(new Date());
         i.setOberta(false);
         em.getTransaction().commit();
     }
@@ -121,6 +133,11 @@ public class PersistenciaMySql implements Persistencia{
         em.getTransaction().begin();
         em.persist(i);
         i.setMisatgeEstat(msg);
+        em.getTransaction().commit();
+    }
+    public void updateAtraccio(Atraccio a){
+        em.getTransaction().begin();
+        em.persist(a);
         em.getTransaction().commit();
     }
     

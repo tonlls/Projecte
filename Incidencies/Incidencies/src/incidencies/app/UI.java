@@ -8,6 +8,8 @@ package incidencies.app;
 import incidencies.app.PersistenceException;
 import incidencies.app.PersistenceFactory;
 import incidencies.app.Persistencia;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +36,7 @@ public class UI extends javax.swing.JFrame {
     Atraccio atraccio=null; 
     Incidencia incidencia=null;
     private HashMap<Integer,Atraccio> atraccions=new HashMap<Integer,Atraccio>();
-
+    private List<Incidencia> incidencies;
     /**
      * Creates new form UI
      */
@@ -48,11 +50,14 @@ public class UI extends javax.swing.JFrame {
         jComboBox1.setModel(new DefaultComboBoxModel(ests.toArray()));
     }
     public TableModel getIncidencies(){
-        final List<Incidencia> incidencies;
+        
         //final List<Incidencia> incidencies=null;
         //if(atraccio!=null)incidencies= p.getIncidencies(atraccio.getId());
-        if(atraccio!=null)incidencies= atraccio.getIncidenciaList();
-        else incidencies=new ArrayList<Incidencia>();
+        incidencies=new ArrayList<Incidencia>();
+        if(atraccio!=null){
+            p.updateAtraccio(atraccio);
+            incidencies= atraccio.getIncidenciaList();
+        }
         String []  cols =  new String [] {"Id","Inici","Fi","oberta","Estat" };
         TableModel tm = new DefaultTableModel() {
                     public int getRowCount() {
@@ -83,7 +88,7 @@ public class UI extends javax.swing.JFrame {
                             case 3:
                                 return i.getOberta();
                             case 4:
-                                return i.getMisatgeEstat();
+                                return i.getEstatOperatiuId().toString();
                             default:
                                 return "";
                         }
@@ -228,6 +233,7 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
+        cua.setEditable(false);
         cua.setText("0");
         cua.setToolTipText("");
         cua.setName(""); // NOI18N
@@ -404,8 +410,8 @@ public class UI extends javax.swing.JFrame {
     private boolean checkDate(String d){
         Calendar cal = Calendar.getInstance();
         cal.setLenient(false);
-        cal.setTime(new Date(d));
         try {
+            cal.setTime(new Date(d));
             cal.getTime();
             return true;
         }
@@ -417,23 +423,33 @@ public class UI extends javax.swing.JFrame {
         String msg=jTextField2.getText();
         EstatOperatiu est=(EstatOperatiu)jComboBox1.getSelectedItem();
         String dateO=jTextField3.getText();
-        if(!checkDate(dateO))return;
-        Date d=new Date(dateO);
+        Date d=null;
+        if(!dateO.equals("")){
+            if(!checkDate(dateO))return;
+            try {
+                d = new SimpleDateFormat("dd-MM-yyyy").parse(dateO);
+            } catch (ParseException ex) {
+                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+        }
         Incidencia in=new Incidencia();
         in.setDataFi(d);
-        in.setDataInici(new Date());
         in.setEstatOperatiuId(est);
         in.setMisatgeEstat(msg);
-        in.setAtraccioId(atraccio);
-        in.setOberta(true);
         if(action==CREATE){
+            in.setAtraccioId(atraccio);
+            in.setDataInici(new Date());
+            in.setOberta(true);
             p.addIncidencia(in);
         }
         else if(action==UPDATE){
-            //p.updateIncidencia(d);
+            in.setId(incidencia.getId());
+            p.updateIncidencia(in);
         }
-        jPanel1.setVisible(false);
+        jTable2.setModel(new DefaultTableModel());
         jTable2.setModel(getIncidencies());
+        jPanel1.setVisible(false);
     }//GEN-LAST:event_SaveActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -441,6 +457,9 @@ public class UI extends javax.swing.JFrame {
         if(incidencia!=null&&atraccio!=null){
             action=UPDATE;
             jPanel1.setVisible(true);
+            if(incidencia.getDataFi()!=null)jTextField3.setText(incidencia.getDataFi().toString());
+            jTextField2.setText(incidencia.getMisatgeEstat());
+            jComboBox1.setSelectedItem(incidencia.getEstatOperatiuId());
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

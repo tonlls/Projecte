@@ -22,5 +22,5 @@ public interface Persistencia {
     public List<EstatOperatiu> getEstats();
     public void updateEstat(Incidencia i,EstatOperatiu e);
     public void updateMissatge(Incidencia i,String msg);
-    
+    public void updateAtraccio(Atraccio a);
 }

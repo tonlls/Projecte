@@ -14,7 +14,8 @@ namespace MySqlDriver
         private static Dictionary<int, int> sessions = new Dictionary<int, int>();
         private string url;
         MySqlTransaction trans;
-        public MySql(string connstr = "Server=localhost;Uid=root;Pwd=;database=port_aventura")
+        //public MySql(string connstr = "Server=localhost;Uid=root;Pwd=;database=port_aventura")
+        public MySql(string connstr = "Server=92.222.27.83;Uid=m2-tllucia;Pwd=47125160T;database=m2_tllucia")
         {
             this.url = connstr;
             //trans = conn.BeginTransaction();
@@ -311,7 +312,21 @@ namespace MySqlDriver
 
         public List<categoria_entrada> getCategoriesEntrades()
         {
-            throw new NotImplementedException();
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("SELECT clients_cua FROM atraccio WHERE id=@atraccio", conn);
+                var r=com.ExecuteReader();
+                while (r.Read())
+                {
+
+                }
+                //return (int)com.ExecuteScalar();
+            }
+        }
+        public void calcPreu()
+        {
+            string txt = "SELECT FROM preu_parc pp JOIN preu pr ON pp.preu_id=pr.id JOIN parc pa ON pp.parc_id=pa.id ";
         }
     }
 }

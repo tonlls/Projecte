@@ -17,10 +17,13 @@
     <class>incidencies.app.TipusAccesAtraccio</class>
     <class>incidencies.app.Client</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/port_aventura?serverTimezone=UTC"/>
-      <property name="javax.persistence.jdbc.user" value="root"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-      <property name="javax.persistence.jdbc.password" value=""/>
+      <!--<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/port_aventura?serverTimezone=UTC"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.password" value=""/>-->
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://92.222.27.83:3306/m2_tllucia?serverTimezone=UTC"/>
+      <property name="javax.persistence.jdbc.user" value="m2-tllucia"/>
+      <property name="javax.persistence.jdbc.password" value="47125160T"/>
     </properties>
   </persistence-unit>
 </persistence>

@@ -1,7 +1,8 @@
-DROP database IF EXISTS port_aventura;
-CREATE database port_aventura;
-USE port_aventura;
-
+-- DROP database IF EXISTS port_aventura;
+-- CREATE database port_aventura;
+-- USE port_aventura;
+SET autocommit=0;
+START TRANSACTION;
 CREATE TABLE categoria_entrada(
 	id INT AUTO_INCREMENT,
 	nom VARCHAR(30) NOT NULL,
@@ -55,11 +56,11 @@ CREATE TABLE entrada(
 	data DATETIME DEFAULT CURRENT_TIMESTAMP,
 	dies_validesa INT,
 	preu float,
-	-- client_id INT,
+	client_id INT,
 	categoria_id INT,
 	preu_id INT,
 	PRIMARY KEY (id),
-	-- FOREIGN KEY (client_id) REFERENCES client(id),
+	FOREIGN KEY (client_id) REFERENCES client(id),
 	FOREIGN KEY (categoria_id) REFERENCES categoria_entrada(id),
 	FOREIGN KEY (preu_id) REFERENCES preu(id)
 );

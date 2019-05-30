@@ -10,6 +10,19 @@
 <project name="Incidencies" default="default" basedir=".">
     <description>Builds, tests, and runs the project Incidencies.</description>
     <import file="nbproject/build-impl.xml"/>
+    <target name="-post-compile" description="permet preparar un jar pel client">
+        <copy todir="${dist.dir}">
+            <fileset file="persistence.properties"/>
+        </copy>
+        <jar jarfile="${dist.jar}" update="true">
+            <fileset file="./persistence.properties"/>
+            <zipfileset src="../Persistencia/dist/Persistencia.jar" excludes="META-INF/*" />
+            <zipfileset src="../mysqlconnector.jar" excludes="META-INF/*" />
+            <!--<zipfileset src="../." includes="*.jar" excludes="META-INF/*"/>-->
+            <zipfileset src="../PersistenciaMySql/dist/PersistenciaMySql.jar" excludes="META-INF/*" />
+            <zipfileset src="../Model/dist/Model.jar" excludes="META-INF/*" />
+        </jar>
+    </target>
     <!--
 
     There exist several targets which are by default empty and which can be 

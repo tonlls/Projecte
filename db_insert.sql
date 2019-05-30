@@ -1,3 +1,4 @@
+START TRANSACTION;
 insert into categoria_entrada(id,nom)
 values
 	(1,'ADULT'),
@@ -20,7 +21,10 @@ values
 
 insert into preu(id,dies,preu_adult,preu_nen_senior,preu_discapacitat)
 values
-	(1,1,10,10,10);
+	(1,1,10,10,10),
+	(2,2,20,20,20),
+	(3,3,30,30,30),
+	(4,4,40,40,40);
 
 insert into client(nif,contrasenya,nom)
 values
@@ -34,15 +38,18 @@ VALUES
 	
 insert into preu_parc(preu_id,parc_id)
 values
-	(1,1);
+	(1,1),
+	(2,1),
+	(3,1),
+	(4,1);
 	
 insert into tipus_pasi_expres(nom,preu_dia) 
 values
 	('test',10);
 	
-insert into entrada(dies_validesa,preu,categoria_id,preu_id)
+insert into entrada(dies_validesa,client_id,preu,categoria_id,preu_id)
 values
-	(1,12.21,1,1);
+	(1,1,12.21,1,1);
 	
 insert into zona(id,parc_id,nom)
 values

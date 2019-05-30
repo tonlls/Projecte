@@ -115,7 +115,7 @@ public class EstatOperatiu implements Serializable {
 
     @Override
     public String toString() {
-        return getNom();
+        return this.getNom();
         //return "incidencies.app.EstatOperatiu[ id=" + id + " ]";
     }
     
