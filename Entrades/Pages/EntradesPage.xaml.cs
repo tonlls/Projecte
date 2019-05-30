@@ -35,8 +35,21 @@ namespace Entrades
             entradesList.ItemsSource = categories;
             parcsList.ItemsSource = parcs;
         }
-        public float calculatePrice()
+        public void calculatePrice()
         {
+            int days=int.Parse(dies.Text);
+            var selectedParcs=parcsList.SelectedItems;
+            foreach(preu p in preus)
+            {
+                if (p.dies == days && p.parcs == selectedParcs)
+                {
+                    foreach(ListViewItem x in entradesList.Items)
+                    {
+                        x.
+                    }
+                    //preu.Text = +"";
+                }
+            }
             return 1;
         }
     }

@@ -26,6 +26,7 @@ namespace Entrades
         {
             this.db = db;
             InitializeComponent();
+            //type.ItemsSource=db.get
         }
     }
 }

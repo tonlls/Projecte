@@ -17,7 +17,6 @@ C:\Users\tonll\Desktop\Projecte\Entrades\obj\Debug\Entrades.csproj.CoreCompileIn
 C:\Users\tonll\Desktop\Projecte\Entrades\obj\Debug\Entrades.exe
 C:\Users\tonll\Desktop\Projecte\Entrades\obj\Debug\Entrades.pdb
 C:\Users\tonll\Desktop\Projecte\Entrades\bin\Debug\DBBasic.dll
-C:\Users\tonll\Desktop\Projecte\Entrades\bin\Debug\MySqlDriver.dll
 C:\Users\tonll\Desktop\Projecte\Entrades\bin\Debug\DBBasic.pdb
 C:\Users\tonll\Desktop\Projecte\Entrades\bin\Debug\MySqlDriver.pdb
 C:\Users\tonll\Desktop\Projecte\Entrades\obj\Debug\Entrades.csproj.CopyComplete
@@ -36,3 +35,4 @@ C:\Users\tonll\Desktop\Projecte\Entrades\obj\Debug\Pages\EntradesPage.baml
 C:\Users\tonll\Desktop\Projecte\Entrades\obj\Debug\Pages\InformePage.baml
 C:\Users\tonll\Desktop\Projecte\Entrades\obj\Debug\Pages\ManagePassisPage.baml
 C:\Users\tonll\Desktop\Projecte\Entrades\obj\Debug\Pages\PassisPage.baml
+C:\Users\tonll\Desktop\Projecte\Entrades\bin\Debug\MySqlDriver.dll

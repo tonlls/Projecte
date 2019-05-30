@@ -4,12 +4,12 @@ namespace DBBasic
 {
     public class preu
     {
-        int id;
-        int dies;
-        float preu_adult;
-        float preu_nen_senior;
-        float preu_discapacitat;
-        List<int> parcs;
+        public int id;
+        public int dies;
+        public float preu_adult;
+        public float preu_nen_senior;
+        public float preu_discapacitat;
+        public List<int> parcs;
         public preu(int id, int dies, float preu_adult, float preu_nen_senior, float preu_discapacitat, List<int> parcs)
         {
             this.id = id;

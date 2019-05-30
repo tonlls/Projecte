@@ -14,8 +14,8 @@ namespace MySqlDriver
         private static Dictionary<int, int> sessions = new Dictionary<int, int>();
         private string url;
         MySqlTransaction trans;
-        //public MySql(string connstr = "Server=localhost;Uid=root;Pwd=;database=port_aventura")
-        public MySql(string connstr = "Server=92.222.27.83;Uid=m2-tllucia;Pwd=47125160T;database=m2_tllucia")
+        public MySql(string connstr = "Server=localhost;Uid=root;Pwd=;database=port_aventura")
+        //public MySql(string connstr = "Server=92.222.27.83;Uid=m2-tllucia;Pwd=47125160T;database=m2_tllucia")
         {
             this.url = connstr;
             //trans = conn.BeginTransaction();
@@ -306,6 +306,7 @@ namespace MySqlDriver
                                      re.GetFloat("preu_nen_senior"),
                                      parcs));
                 }
+                re.Close();
                 return ret;
             }
         }
@@ -321,6 +322,8 @@ namespace MySqlDriver
                 {
 
                 }
+                r.Close();
+                return null;
                 //return (int)com.ExecuteScalar();
             }
         }

@@ -22,14 +22,18 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding}"></TextBlock>
-                        <local:NumberInput Margin="10,0,0,0"></local:NumberInput>
+                        <local:NumberInput Margin="10,0,0,0" number="0"></local:NumberInput>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <StackPanel Grid.Column="1" Grid.Row="0">
             <TextBlock Text="Dies"></TextBlock>
-            <local:NumberInput></local:NumberInput>
+            <ComboBox Name="dies">
+                <ComboBoxItem Content="1"/>
+                <ComboBoxItem Content="2"/>
+                <ComboBoxItem Content="3"/>
+            </ComboBox>
         </StackPanel>
         <ListView Grid.Column="1" SelectionMode="Multiple" Name="parcsList" Grid.Row="1">
             <ListView.ItemTemplate>
@@ -38,5 +42,9 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <TextBlock>NIF</TextBlock>
+        <TextBox Name="nif"></TextBox>
+
+        <TextBox Name="preu"></TextBox>
     </Grid>
 </Page>

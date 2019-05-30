@@ -46,6 +46,8 @@ namespace Entrades
         public NumberInput()
         {
             InitializeComponent();
+            number = 0;
+            numberChanged();
         }
 
         private void Btmore_Click(object sender, RoutedEventArgs e)
