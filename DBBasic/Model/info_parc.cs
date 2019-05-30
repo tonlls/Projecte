@@ -10,6 +10,11 @@ namespace DBBasic.Model
         public string nom;
         public string url_foto;
 
+        public override string ToString()
+        {
+            return nom;
+        }
+
         public info_parc(int id, string nom, string url_foto)
         {
             this.id = id;

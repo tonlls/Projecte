@@ -3,25 +3,25 @@ CREATE database port_aventura;
 USE port_aventura;
 
 CREATE TABLE categoria_entrada(
-	id INT,
+	id INT AUTO_INCREMENT,
 	nom VARCHAR(30) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (nom)
 );
 CREATE TABLE tipus_acces(
-	id INT,
+	id INT AUTO_INCREMENT,
 	nom VARCHAR(30) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (nom)
 );
 CREATE TABLE estat_operatiu(
-	id INT,
+	id INT AUTO_INCREMENT,
 	nom VARCHAR(30) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (nom)
 );
 CREATE TABLE preu(
-	id INT,
+	id INT AUTO_INCREMENT,
 	dies INT NOT NULL,
 	preu_adult INT NOT NULL,
 	preu_nen_senior INT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE client(
 	PRIMARY KEY (id)
 );
 CREATE TABLE parc(
-	id INT,
+	id INT AUTO_INCREMENT,
 	nom VARCHAR(30) NOT NULL,
 	url_foto VARCHAR(200) NOT NULL,
 	PRIMARY KEY (id)
@@ -71,10 +71,10 @@ CREATE TABLE zona(
 	FOREIGN KEY (parc_id) REFERENCES parc(id)
 );
 CREATE TABLE atraccio(
-	id INT,
+	id INT AUTO_INCREMENT,
 	zona_id INT,
 	parc_id INT,
-	-- incidencia_actual_id INT REFERENCES incidencia(id),
+	incidencia_id INT,
 	estat_actual_id INT,
 	capacitat_maxima_ronda INT,
 	descripcioHTML VARCHAR(300),
@@ -90,7 +90,7 @@ CREATE TABLE atraccio(
 );
 
 CREATE TABLE incidencia(
-	id INT,
+	id INT AUTO_INCREMENT,
 	oberta BOOLEAN NOT NULL DEFAULT FALSE,
 	atraccio_id INT,
 	estat_operatiu_id INT,
@@ -98,10 +98,12 @@ CREATE TABLE incidencia(
 	data_fi DATETIME,
 	misatge_estat VARCHAR(50),
 	data_fi_prevista DATETIME,
-	PRIMARY KEY(id,atraccio_id),
+	-- PRIMARY KEY(id,atraccio_id),
+	PRIMARY KEY(id),
 	FOREIGN KEY (atraccio_id) REFERENCES atraccio(id),
 	FOREIGN KEY (estat_operatiu_id) REFERENCES estat_operatiu(id)
 );
+ALTER TABLE atraccio ADD FOREIGN KEY (incidencia_id) REFERENCES incidencia(id);
 CREATE TABLE preu_parc(
 	preu_id INT,
 	parc_id INT,

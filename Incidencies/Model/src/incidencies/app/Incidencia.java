@@ -7,18 +7,23 @@ package incidencies.app;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -29,9 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Incidencia.findAll", query = "SELECT i FROM Incidencia i"),
-    @NamedQuery(name = "Incidencia.findById", query = "SELECT i FROM Incidencia i WHERE i.incidenciaPK.id = :id"),
+    @NamedQuery(name = "Incidencia.findById", query = "SELECT i FROM Incidencia i WHERE i.id = :id"),
     @NamedQuery(name = "Incidencia.findByOberta", query = "SELECT i FROM Incidencia i WHERE i.oberta = :oberta"),
-    @NamedQuery(name = "Incidencia.findByAtraccioId", query = "SELECT i FROM Incidencia i WHERE i.incidenciaPK.atraccioId = :atraccioId"),
     @NamedQuery(name = "Incidencia.findByDataInici", query = "SELECT i FROM Incidencia i WHERE i.dataInici = :dataInici"),
     @NamedQuery(name = "Incidencia.findByDataFi", query = "SELECT i FROM Incidencia i WHERE i.dataFi = :dataFi"),
     @NamedQuery(name = "Incidencia.findByMisatgeEstat", query = "SELECT i FROM Incidencia i WHERE i.misatgeEstat = :misatgeEstat"),
@@ -39,8 +43,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Incidencia implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected IncidenciaPK incidenciaPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
     @Column(name = "oberta")
     private boolean oberta;
@@ -56,36 +63,34 @@ public class Incidencia implements Serializable {
     @Column(name = "data_fi_prevista")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataFiPrevista;
-    @JoinColumn(name = "atraccio_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Atraccio atraccio;
+    @JoinColumn(name = "atraccio_id", referencedColumnName = "id")
+    @ManyToOne
+    private Atraccio atraccioId;
     @JoinColumn(name = "estat_operatiu_id", referencedColumnName = "id")
     @ManyToOne
     private EstatOperatiu estatOperatiuId;
+    @OneToMany(mappedBy = "incidenciaId")
+    private List<Atraccio> atraccioList;
 
     public Incidencia() {
     }
 
-    public Incidencia(IncidenciaPK incidenciaPK) {
-        this.incidenciaPK = incidenciaPK;
+    public Incidencia(Integer id) {
+        this.id = id;
     }
 
-    public Incidencia(IncidenciaPK incidenciaPK, boolean oberta, Date dataInici) {
-        this.incidenciaPK = incidenciaPK;
+    public Incidencia(Integer id, boolean oberta, Date dataInici) {
+        this.id = id;
         this.oberta = oberta;
         this.dataInici = dataInici;
     }
 
-    public Incidencia(int id, int atraccioId) {
-        this.incidenciaPK = new IncidenciaPK(id, atraccioId);
+    public Integer getId() {
+        return id;
     }
 
-    public IncidenciaPK getIncidenciaPK() {
-        return incidenciaPK;
-    }
-
-    public void setIncidenciaPK(IncidenciaPK incidenciaPK) {
-        this.incidenciaPK = incidenciaPK;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public boolean getOberta() {
@@ -128,12 +133,12 @@ public class Incidencia implements Serializable {
         this.dataFiPrevista = dataFiPrevista;
     }
 
-    public Atraccio getAtraccio() {
-        return atraccio;
+    public Atraccio getAtraccioId() {
+        return atraccioId;
     }
 
-    public void setAtraccio(Atraccio atraccio) {
-        this.atraccio = atraccio;
+    public void setAtraccioId(Atraccio atraccioId) {
+        this.atraccioId = atraccioId;
     }
 
     public EstatOperatiu getEstatOperatiuId() {
@@ -144,10 +149,19 @@ public class Incidencia implements Serializable {
         this.estatOperatiuId = estatOperatiuId;
     }
 
+    @XmlTransient
+    public List<Atraccio> getAtraccioList() {
+        return atraccioList;
+    }
+
+    public void setAtraccioList(List<Atraccio> atraccioList) {
+        this.atraccioList = atraccioList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (incidenciaPK != null ? incidenciaPK.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -158,7 +172,7 @@ public class Incidencia implements Serializable {
             return false;
         }
         Incidencia other = (Incidencia) object;
-        if ((this.incidenciaPK == null && other.incidenciaPK != null) || (this.incidenciaPK != null && !this.incidenciaPK.equals(other.incidenciaPK))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -166,7 +180,7 @@ public class Incidencia implements Serializable {
 
     @Override
     public String toString() {
-        return "incidencies.app.Incidencia[ incidenciaPK=" + incidenciaPK + " ]";
+        return "incidencies.app.Incidencia[ id=" + id + " ]";
     }
     
 }

@@ -6,24 +6,16 @@
         xmlns:local="clr-namespace:Entrades"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <ListView Grid.Column="0" Name="entradesList">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock></TextBlock>
-                        <local:NumberInput></local:NumberInput>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <ListView Grid.Column="1" SelectionMode="Multiple" Name="parcsList">
-        </ListView>
-    </Grid>
+    <StackPanel>
+        
+    <Menu>
+            <MenuItem Header="Buy Entrades" Name="entrades" Click="Entrades_Click"></MenuItem>
+            <MenuItem Header="Buy Passis" Name="passis" Click="Passis_Click"></MenuItem>
+            <MenuItem Header="Manage Passis" Name="manage_passis" Click="Manage_passis_Click"></MenuItem>
+            <MenuItem Header="Informe de Ventes" Name="Informe" Click="Informe_Click"></MenuItem>
+    </Menu>
+        <Frame Name="frame" NavigationUIVisibility="Hidden">
+            
+        </Frame>
+    </StackPanel>
 </Window>

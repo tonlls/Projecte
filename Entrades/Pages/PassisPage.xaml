@@ -1,0 +1,30 @@
+﻿<Page x:Class="Entrades.PassisPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Entrades"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="PassisPage">
+
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="NIF"></TextBlock>
+            <TextBox Name="nif"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Nom"></TextBlock>
+            <TextBox Name="nom"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Cognom 1"></TextBlock>
+            <TextBox Name="cognom1"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Cognom 2"></TextBlock>
+            <TextBox Name="cognom2"></TextBox>
+        </StackPanel>
+        <ComboBox Name="type"></ComboBox>
+    </StackPanel>
+</Page>

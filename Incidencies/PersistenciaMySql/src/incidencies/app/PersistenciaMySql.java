@@ -20,7 +20,7 @@ import javax.persistence.Query;
  */
 public class PersistenciaMySql implements Persistencia{
 
-    private EntityManager em;
+    public static EntityManager em;
 
     public PersistenciaMySql() throws PersistenceException {
         this("persistence.properties");
@@ -58,28 +58,13 @@ public class PersistenciaMySql implements Persistencia{
     @Override
     public void updateIncidencia(Incidencia i){
         em.getTransaction().begin();
-        Incidencia in=em.find(Incidencia.class,i.id);
+        Incidencia in=em.find(Incidencia.class,i.getId());
         
        //em.persist(this);
     }
     @Override
-    public void closeIncidencia(Incidencia i){
-        em.getTransaction().begin();
-        em.persist(i);
-        String sql="SELECT MAX(id) FROM INCIDENCIS WHERE atraccio_id="+i.getAtraccio();
-        String sql2="INSERT INTO ";
-    }
-    @Override
-    public List<Incidencia> getIncidencies(int atraccioId){
-        String cad = "select i from incidencia i where i.atraccio_id = :atr";
-        Query q = em.createQuery(cad);
-        q.setParameter("atr",atraccioId);
-        List<Incidencia> ll = q.getResultList();
-        return ll;
-    }
-    @Override
     public List<Atraccio> getAtraccions(){
-        String cad = "select a from atraccio a";
+        String cad = "select a from Atraccio a";
         Query q = em.createQuery(cad);
         List<Atraccio> ll = q.getResultList();
         return ll;
@@ -88,4 +73,55 @@ public class PersistenciaMySql implements Persistencia{
     public void updateCua(int atraccioId){
         
     }
+
+    @Override
+    public void moreCua(Atraccio a) {
+        em.getTransaction().begin();
+        em.persist(a);
+        int i=a.getClientsCua();
+        i=i+1;
+        a.setClientsCua(i);
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void minusCua(Atraccio a) {
+        em.getTransaction().begin();
+        em.persist(a);
+        int i=a.getClientsCua();
+        if(i>0)i=i-1;
+        a.setClientsCua(i);
+        em.getTransaction().commit();
+    }
+    public void closeIncidencia(Incidencia i){
+        em.getTransaction().begin();
+        em.persist(i);
+        i.setOberta(false);
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public List<EstatOperatiu> getEstats() {
+        String cad = "select a from EstatOperatiu a";
+        Query q = em.createQuery(cad);
+        List<EstatOperatiu> ll = q.getResultList();
+        return ll;
+    }
+
+    @Override
+    public void updateEstat(Incidencia i, EstatOperatiu e) {
+        em.getTransaction().begin();
+        em.persist(i);
+        i.setEstatOperatiuId(e);
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void updateMissatge(Incidencia i, String msg) {
+        em.getTransaction().begin();
+        em.persist(i);
+        i.setMisatgeEstat(msg);
+        em.getTransaction().commit();
+    }
+    
 }

@@ -14,8 +14,13 @@ import java.util.List;
 public interface Persistencia {
     public void addIncidencia(Incidencia i);
     public void updateIncidencia(Incidencia i);
-    public void closeIncidencia(Incidencia i);
-    public List<Incidencia> getIncidencies(int atraccioId);
     public List<Atraccio> getAtraccions();
     public void updateCua(int atraccioId);
+    public void moreCua(Atraccio a);
+    public void minusCua(Atraccio a);
+    public void closeIncidencia(Incidencia i);
+    public List<EstatOperatiu> getEstats();
+    public void updateEstat(Incidencia i,EstatOperatiu e);
+    public void updateMissatge(Incidencia i,String msg);
+    
 }

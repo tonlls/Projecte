@@ -2,20 +2,20 @@
 <persistence version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
   <persistence-unit name="Model" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>incidencies.app.PasiExpres</class>
+    <class>incidencies.app.Preu</class>
     <class>incidencies.app.TipusAcces</class>
     <class>incidencies.app.Entrada</class>
-    <class>incidencies.app.Parc</class>
-    <class>incidencies.app.TipusPasiExpres</class>
     <class>incidencies.app.InfoUtilitzacio</class>
-    <class>incidencies.app.EstatOperatiu</class>
     <class>incidencies.app.Zona</class>
-    <class>incidencies.app.Atraccio</class>
-    <class>incidencies.app.Preu</class>
     <class>incidencies.app.CategoriaEntrada</class>
-    <class>incidencies.app.Client</class>
-    <class>incidencies.app.PasiExpres</class>
-    <class>incidencies.app.TipusAccesAtraccio</class>
     <class>incidencies.app.Incidencia</class>
+    <class>incidencies.app.EstatOperatiu</class>
+    <class>incidencies.app.TipusPasiExpres</class>
+    <class>incidencies.app.Parc</class>
+    <class>incidencies.app.Atraccio</class>
+    <class>incidencies.app.TipusAccesAtraccio</class>
+    <class>incidencies.app.Client</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/port_aventura?serverTimezone=UTC"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

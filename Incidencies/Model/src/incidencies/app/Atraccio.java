@@ -11,6 +11,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
@@ -44,6 +46,7 @@ public class Atraccio implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
@@ -64,7 +67,7 @@ public class Atraccio implements Serializable {
     private Integer alçadaMinimaAcompanyat;
     @Column(name = "al\u00e7ada_minima")
     private Integer alçadaMinima;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atraccio")
+    @OneToMany(mappedBy = "atraccioId")
     private List<Incidencia> incidenciaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "atraccio")
     private List<TipusAccesAtraccio> tipusAccesAtraccioList;
@@ -76,6 +79,9 @@ public class Atraccio implements Serializable {
     @JoinColumn(name = "estat_actual_id", referencedColumnName = "id")
     @ManyToOne
     private EstatOperatiu estatActualId;
+    @JoinColumn(name = "incidencia_id", referencedColumnName = "id")
+    @ManyToOne
+    private Incidencia incidenciaId;
     @OneToMany(mappedBy = "atraccioId")
     private List<InfoUtilitzacio> infoUtilitzacioList;
 
@@ -195,6 +201,14 @@ public class Atraccio implements Serializable {
 
     public void setEstatActualId(EstatOperatiu estatActualId) {
         this.estatActualId = estatActualId;
+    }
+
+    public Incidencia getIncidenciaId() {
+        return incidenciaId;
+    }
+
+    public void setIncidenciaId(Incidencia incidenciaId) {
+        this.incidenciaId = incidenciaId;
     }
 
     @XmlTransient

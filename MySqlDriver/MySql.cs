@@ -284,6 +284,7 @@ namespace MySqlDriver
             using (var conn1 = new MySqlConnection(url))
             {
                 conn.Open();
+                conn1.Open();
                 MySqlCommand com = new MySqlCommand("SELECT id,dies,preu_adult,preu_nen_senior,preu_discapacitat FROM preu", conn);
                 var re=com.ExecuteReader();
                 while (re.Read())
@@ -306,6 +307,11 @@ namespace MySqlDriver
                 }
                 return ret;
             }
+        }
+
+        public List<categoria_entrada> getCategoriesEntrades()
+        {
+            throw new NotImplementedException();
         }
     }
 }
