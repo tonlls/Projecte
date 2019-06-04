@@ -25,7 +25,8 @@ namespace Entrades
         private DBInterface db;
         private List<preu> preus;
         private List<info_parc> parcs;
-        private List<string> categories = new List<string>() { "ADULT", "DISCAPACITAT", "SENIOR" };
+
+        private List<(string,int)> categories = new List<(string, int)>() { ("ADULT", 0),( "DISCAPACITAT",0),( "SENIOR",0) };
         public EntradesPage(DBInterface db)
         {
             this.db = db;
@@ -34,23 +35,23 @@ namespace Entrades
             InitializeComponent();
             entradesList.ItemsSource = categories;
             parcsList.ItemsSource = parcs;
+            calculatePrice();
         }
         public void calculatePrice()
         {
-            int days=int.Parse(dies.Text);
+            int days=dies.Text==""?1:int.Parse(dies.Text);
             var selectedParcs=parcsList.SelectedItems;
             foreach(preu p in preus)
             {
-                if (p.dies == days && p.parcs == selectedParcs)
+                //if (p.dies == days && p.parcs == selectedParcs)
                 {
-                    foreach(ListViewItem x in entradesList.Items)
+                    foreach(var x in entradesList.Items)
                     {
-                        x.
+                        
                     }
                     //preu.Text = +"";
                 }
             }
-            return 1;
         }
     }
 }

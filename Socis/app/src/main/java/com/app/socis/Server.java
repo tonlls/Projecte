@@ -33,8 +33,8 @@ public class Server extends AsyncTask<Request,Void,Object> {
 	}
 
 	public static Object doRequest(Request request,Class clas,boolean cast) {
-		try(Socket sc = new Socket("10.0.2.2", 11000)){
-		//try(Socket sc = new Socket("10.132.25.189", 11000)){
+		//try(Socket sc = new Socket("10.0.2.2", 11000)){
+		try(Socket sc = new Socket("10.132.25.189", 11000)){
 			DataOutputStream dOut = new DataOutputStream(sc.getOutputStream());
 			DataInputStream dIn = new DataInputStream(sc.getInputStream());
 			dOut.write(request.serialize());

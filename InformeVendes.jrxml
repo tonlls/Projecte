@@ -6,55 +6,94 @@
 	<parameter name="id" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="ids" class="java.util.Collection">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
 	<queryString>
-		<![CDATA[select p.nom,c.nom cat
-from entrada e
-join categoria_entrada c
-on c.id=e.categoria_id
-join entrada_parc ep
-on ep.entrada_id=$P{id}
-join parc p
-on p.id=ep.parc_id
-where e.id=$P{id}]]>
+		<![CDATA[SELECT p.nom,p.url_foto,p.id parc,
+(select count(*) from entrada e join entrada_parc ep on ep.entrada_id=e.id where ep.parc_id=p.id and e.categoria_id=(select id from categoria_entrada where nom='ADULT'))  as entradesAdult,
+(select count(*) from entrada e join entrada_parc ep on ep.entrada_id=e.id where ep.parc_id=p.id and e.categoria_id=(select id from categoria_entrada where nom='DISCAPACITAT'))  as entradesDiscapacitat,
+(select count(*) from entrada e join entrada_parc ep on ep.entrada_id=e.id where ep.parc_id=p.id and e.categoria_id=(select id from categoria_entrada where nom='SENIOR'))  as entradesSenior
+FROM parc p
+where ($P{id} is null or p.id=$P{id})]]>
 	</queryString>
 	<field name="nom" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="cat" class="java.lang.String"/>
+	<field name="url_foto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="parc" class="java.lang.Integer"/>
+	<field name="entradesAdult" class="java.lang.Long"/>
+	<field name="entradesDiscapacitat" class="java.lang.Long"/>
+	<field name="entradesSenior" class="java.lang.Long"/>
+	<group name="parcs" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{parc}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="7df77d8f-ae92-4001-8cdf-c17bf3a50fcd" x="26" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{nom}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="79f24038-29da-40b0-93d8-dc7587f87437" x="0" y="0" width="26" height="20"/>
+					<textElement/>
+					<text><![CDATA[Parc: ]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="79" splitType="Stretch"/>
-	</title>
 	<pageHeader>
-		<band height="50"/>
-	</pageHeader>
-	<columnHeader>
-		<band height="20" splitType="Stretch">
+		<band height="74">
 			<staticText>
-				<reportElement uuid="3c5d2e93-9b43-4a3f-a02d-86ac8d2f580e" x="0" y="0" width="100" height="20"/>
+				<reportElement uuid="29a70972-3093-4385-9159-8be831a5e37f" x="0" y="0" width="236" height="30"/>
+				<textElement>
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[Informe De Ventes]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="b08e23f6-a8c2-4ed4-abec-60b43af00054" x="389" y="11" width="100" height="50"/>
+				<imageExpression><![CDATA[new URL($F{url_foto})]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="60" splitType="Stretch">
+			<textField>
+				<reportElement uuid="4c698f3b-79f9-4cfc-be11-c91d2127068a" x="136" y="0" width="100" height="20"/>
 				<textElement/>
-				<text><![CDATA[Parc]]></text>
+				<textFieldExpression><![CDATA[$F{entradesAdult}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="47c08b84-171e-4311-9274-6a19ae87d2cb" x="136" y="20" width="125" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{entradesDiscapacitat}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="37a6521d-bb09-4dba-bcdb-0546e9491d8e" x="36" y="20" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[entradesDiscapacitat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dc993e63-3225-4f3c-83cd-f199f2baa46c" x="36" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[entradesAdult]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1599c827-0d22-4e1e-8e1f-fd30454f6cd6" x="136" y="40" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{entradesSenior}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="940b7f0d-e717-45aa-90df-689ec27a5daa" x="36" y="40" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[entradesSenior]]></text>
 			</staticText>
 		</band>
-	</columnHeader>
-	<detail>
-		<band height="20" splitType="Stretch">
-			<textField>
-				<reportElement uuid="d3fbf319-6804-420c-a232-88c2c8d32004" x="0" y="0" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{nom}]]></textFieldExpression>
-			</textField>
-		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="20" splitType="Stretch"/>
 	</pageFooter>
 </jasperReport>

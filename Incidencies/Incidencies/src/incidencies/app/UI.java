@@ -31,7 +31,7 @@ import javax.swing.table.TableModel;
 public class UI extends javax.swing.JFrame {
     private int CREATE=1;
     private int UPDATE=2;
-    private final Persistencia p;
+    private Persistencia p;
     int action;
     Atraccio atraccio=null; 
     Incidencia incidencia=null;
@@ -41,7 +41,13 @@ public class UI extends javax.swing.JFrame {
      * Creates new form UI
      */
     public UI() throws PersistenceException {
-        p=PersistenceFactory.getInstance("incidencies.app.PersistenciaMySql",null);
+        try{
+            p=PersistenceFactory.getInstance("incidencies.app.PersistenciaMySql",null);
+        }
+        catch(Exception e){
+            System.out.println("EROR");
+            System.exit(0);
+        }
         initComponents();
         jPanel1.setVisible(false);
         List<EstatOperatiu> ests=p.getEstats();
@@ -58,7 +64,7 @@ public class UI extends javax.swing.JFrame {
             p.updateAtraccio(atraccio);
             incidencies= atraccio.getIncidenciaList();
         }
-        String []  cols =  new String [] {"Id","Inici","Fi","oberta","Estat" };
+        String []  cols =  new String [] {"Id","Missatge","Inici","Fi","oberta","Estat" };
         TableModel tm = new DefaultTableModel() {
                     public int getRowCount() {
                         return incidencies.size();
@@ -82,12 +88,14 @@ public class UI extends javax.swing.JFrame {
                             case 0:
                                 return i.getId();
                             case 1:
-                                return i.getDataInici();
+                                return i.getMisatgeEstat();
                             case 2:
-                                return i.getDataFi();
+                                return new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(i.getDataInici());
                             case 3:
-                                return i.getOberta();
+                                return i.getDataFi()==null?"":new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(i.getDataFi());
                             case 4:
+                                return i.getOberta();
+                            case 5:
                                 return i.getEstatOperatiuId().toString();
                             default:
                                 return "";
@@ -181,6 +189,7 @@ public class UI extends javax.swing.JFrame {
         jTextField3 = new javax.swing.JTextField();
         Save = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -307,6 +316,13 @@ public class UI extends javax.swing.JFrame {
                 .addContainerGap(85, Short.MAX_VALUE))
         );
 
+        jButton6.setText("Update");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -314,13 +330,13 @@ public class UI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 644, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(676, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -329,6 +345,8 @@ public class UI extends javax.swing.JFrame {
                         .addComponent(cua, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3)
                         .addGap(18, 18, 18)
@@ -353,7 +371,8 @@ public class UI extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addComponent(jButton4)
                         .addComponent(cua, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton5)))
+                        .addComponent(jButton5)
+                        .addComponent(jButton6)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 12, Short.MAX_VALUE))
@@ -427,7 +446,8 @@ public class UI extends javax.swing.JFrame {
         if(!dateO.equals("")){
             if(!checkDate(dateO))return;
             try {
-                d = new SimpleDateFormat("dd-MM-yyyy").parse(dateO);
+                d = new SimpleDateFormat("dd/MM/yyyy - HH:mm").parse(dateO);
+                System.out.println(d.toString());
             } catch (ParseException ex) {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                 return;
@@ -457,7 +477,7 @@ public class UI extends javax.swing.JFrame {
         if(incidencia!=null&&atraccio!=null){
             action=UPDATE;
             jPanel1.setVisible(true);
-            if(incidencia.getDataFi()!=null)jTextField3.setText(incidencia.getDataFi().toString());
+            if(incidencia.getDataFi()!=null)jTextField3.setText(new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(incidencia.getDataFi()));
             jTextField2.setText(incidencia.getMisatgeEstat());
             jComboBox1.setSelectedItem(incidencia.getEstatOperatiuId());
         }
@@ -470,6 +490,13 @@ public class UI extends javax.swing.JFrame {
             jPanel1.setVisible(true);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        for (Atraccio a : atraccions.values()) {
+            p.updateAtraccio(a);
+        }
+        jTable1.setModel(getAtraccions());
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -519,6 +546,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;

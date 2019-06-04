@@ -36,7 +36,7 @@ public class PassisActivity extends AppCompatActivity implements IActivity {
 	private int session;
 	passi_expres actual_pas;
 
-	private void Login(){
+	private void Login(boolean force){
 		boolean logged=true;
 		Credentials cred=null;
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -44,7 +44,7 @@ public class PassisActivity extends AppCompatActivity implements IActivity {
 		String pas = settings.getString("password", "");
 		if(usr==""||pas=="") logged=false;
 		else cred=new Credentials(usr,pas);
-		if(!logged){
+		if(!logged||force){
 			getLogin();
 		}
 		else
@@ -77,7 +77,7 @@ public class PassisActivity extends AppCompatActivity implements IActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_passis);
-		Login();
+		Login(false);
 		((RecyclerView)findViewById(R.id.pasList)).setLayoutManager(new LinearLayoutManager(this,0,false));
 		((RecyclerView)findViewById(R.id.atraccions)).setLayoutManager(new LinearLayoutManager(this));
 	}
@@ -86,10 +86,15 @@ public class PassisActivity extends AppCompatActivity implements IActivity {
 	public void setResult(Object o, Class c, int extra) {
 		if(c==login_obj.class) {
 			this.session = ((login_obj) o).code;
-			Server at = new Server(this, getpass_obj.class);
-			Object[] arr=new Object[1];
-			arr[0]=this.session;
-			at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getPassis",arr));
+			if(this.session==-1){
+				Login(true);
+			}
+			else{
+				Server at = new Server(this, getpass_obj.class);
+				Object[] arr=new Object[1];
+				arr[0]=this.session;
+				at.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Request("getPassis",arr));
+			}
 		}
 		else if(c== getpass_obj.class){
 			((RecyclerView)findViewById(R.id.pasList)).setAdapter(new PasAdapter(this,((getpass_obj)o).passis));

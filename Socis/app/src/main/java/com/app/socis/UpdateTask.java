@@ -39,6 +39,7 @@ public class UpdateTask extends AsyncTask<HashMap<Integer,ArrayList<atraccio>>,L
 			Object[] arr=new Object[1];
 			arr[0]=p;
 			info_atraccions_obj at = (info_atraccions_obj) Server.doRequest(new Request("getInfoAtraccions",arr), info_atraccions_obj.class,true);
+			if(at.estats_atraccions==null)at.estats_atraccions=new ArrayList<atraccio>();
 			if(at.estats_atraccions!=null)
 				Mhash.put(p, (ArrayList<atraccio>) at.estats_atraccions);
 		}

@@ -21,7 +21,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding}"></TextBlock>
+                        <TextBlock Text="{Binding }"></TextBlock>
                         <local:NumberInput Margin="10,0,0,0" number="0"></local:NumberInput>
                     </StackPanel>
                 </DataTemplate>

@@ -49,7 +49,15 @@ public class PersistenciaMySql implements Persistencia{
         } catch (javax.persistence.PersistenceException ex) {
             throw new PersistenceException("Problemes en crear l'EntityManager", ex);
         }
-        //emf.
+        try{
+            
+        String cad = "select a from Atraccio a";
+        Query q = em.createQuery(cad);
+        List<Atraccio> ll = q.getResultList();
+        }
+        catch(Exception e){
+            throw new PersistenceException("",e);
+        }
     }
     @Override
     public void addIncidencia(Incidencia i){
@@ -104,11 +112,16 @@ public class PersistenciaMySql implements Persistencia{
         a.setClientsCua(i);
         em.getTransaction().commit();
     }
+    @Override
     public void closeIncidencia(Incidencia i){
         em.getTransaction().begin();
         em.persist(i);
         i.setDataFi(new Date());
         i.setOberta(false);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        Atraccio a=i.getAtraccioId();
+        a.setIncidenciaId(null);
         em.getTransaction().commit();
     }
 
@@ -135,6 +148,7 @@ public class PersistenciaMySql implements Persistencia{
         i.setMisatgeEstat(msg);
         em.getTransaction().commit();
     }
+    @Override
     public void updateAtraccio(Atraccio a){
         em.getTransaction().begin();
         em.persist(a);

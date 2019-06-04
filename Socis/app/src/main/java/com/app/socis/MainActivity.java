@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	@Override
 	public boolean onQueryTextSubmit(String s) {
 		if(s.length()!=0) {
-			ut.Stop();
+			if(ut!=null)ut.Stop();
 			for (int i : atraccions.keySet()) {
 				ArrayList<atraccio> a = new ArrayList<atraccio>();
 				for (atraccio at : atraccions.get(i)) {

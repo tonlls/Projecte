@@ -1,3 +1,4 @@
+SET autocommit=0;
 START TRANSACTION;
 insert into categoria_entrada(id,nom)
 values
@@ -28,7 +29,7 @@ values
 
 insert into client(nif,contrasenya,nom)
 values
-	('12345678T','1234','test');
+	('11111111T','1234','test1');
 
 INSERT INTO parc(id,nom,url_foto)
 VALUES
@@ -53,20 +54,22 @@ values
 	
 insert into zona(id,parc_id,nom)
 values
-	(1,3,'Mediterranea'),
-	(2,3,'China'),
-	(3,3,'Polynesia'),
-	(4,3,'Mexico'),
+	(1,1,'Mediterranea'),
+	(2,1,'China'),
+	(3,2,'Polynesia'),
+	(4,2,'Mexico'),
 	(5,3,'Sesamo'),
 	(6,3,'Farwest');
 	
 INSERT INTO atraccio(id,zona_id,parc_id,estat_actual_id,capacitat_maxima_ronda,descripcioHTML,nom,temps_per_ronda,url_foto,clients_cua,alçada_minima_acompanyat,alçada_minima) 
 VALUES
-	(1, 1, 3, 1, 10, '', 'Furius Bacus', 10, 'https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/110/small_square/EXPLORA_OTRAS_DRAGON_KHAN_PAP-CH_ATR_DK_EXT_0615_012.jpg', 0, 10, 10);
+	(1, 1, 1, 1, 10, '', 'Furius Bacus', 10, 'https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/110/small_square/EXPLORA_OTRAS_DRAGON_KHAN_PAP-CH_ATR_DK_EXT_0615_012.jpg', 0, 10, 10),
+	(2, 3, 2, 1, 10, '', 'Port de la Drassana', 10, 'https://s3-eu-west-1.amazonaws.com/portaventura-world-production-files/wilson_cms/images/images/000/000/142/small_square/Port-de-la-Drassan1.jpg', 0, 10, 10),
+	(3, 5, 3, 1, 10, '', 'Tutuki Splash', 10, 'https://fastly.4sqi.net/img/general/600x600/36761565_wQAH-B1ZPX8UcCrBJXXEqIjdVKUGKzzRNp5sONthe1g.jpg', 0, 10, 10);
 	
 insert into incidencia(atraccio_id,estat_operatiu_id,misatge_estat) 
 values
-	(1,1,'');
+	(1,1,'Frens Averiats');
 	
 insert into entrada_parc(entrada_id,parc_id)
 values

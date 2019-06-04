@@ -14,8 +14,8 @@ namespace MySqlDriver
         private static Dictionary<int, int> sessions = new Dictionary<int, int>();
         private string url;
         MySqlTransaction trans;
-        public MySql(string connstr = "Server=localhost;Uid=root;Pwd=;database=port_aventura")
-        //public MySql(string connstr = "Server=92.222.27.83;Uid=m2-tllucia;Pwd=47125160T;database=m2_tllucia")
+        //public MySql(string connstr = "Server=localhost;Uid=root;Pwd=;database=port_aventura")
+        public MySql(string connstr = "Server=92.222.27.83;Uid=m2-tllucia;Pwd=47125160T;database=m2_tllucia")
         {
             this.url = connstr;
             //trans = conn.BeginTransaction();
@@ -52,13 +52,16 @@ namespace MySqlDriver
                 var rd = com.ExecuteReader();
                 String s =com.CommandText;
                 rd.Read();
-                int id = rd.GetInt32("id");
-                string pas = rd.GetString("contrasenya");
-                if (pass == pas)
+                if (rd.HasRows)
                 {
-                    if (sessions.ContainsKey(id)) return new login_obj(sessions[id]);
-                    sessions.Add(SESS_ID,id);
-                    return new login_obj(SESS_ID++);
+                    int id = rd.GetInt32("id");
+                    string pas = rd.GetString("contrasenya");
+                    if (pass == pas)
+                    {
+                        if (sessions.ContainsKey(id)) return new login_obj(sessions[id]);
+                        sessions.Add(SESS_ID,id);
+                        return new login_obj(SESS_ID++);
+                    }
                 }
                 return new login_obj(-1);
             }
@@ -73,7 +76,7 @@ namespace MySqlDriver
                 conn.Open();
                 conn1.Open();
                 MySqlCommand com = new MySqlCommand("select p.id id,t.id t_id,t.nom t_nom,p.data data from pasi_expres p JOIN tipus_pasi_expres t on t.id = p.tipus_id where client_id = @cli", conn);
-                MySqlCommand com1 = new MySqlCommand("select a.nom nom,e.nom estat,iu.num_usos usos ,ta.nom tipus from atraccio a JOIN estat_operatiu e on e.id = a.estat_actual_id LEFT JOIN info_utilitzacio iu on iu.atraccio_id = a.id and iu.pasi_id = @pas LEFT JOIN tipus_acces ta on ta.id = (select tipus_acces_id from tipus_acces_atraccio where tipus_pasi_id = @t_pas and atraccio_id = a.id) ", conn1);
+                MySqlCommand com1 = new MySqlCommand("select a.nom nom,e.nom estat,iu.num_usos usos ,ta.nom tipus from atraccio a JOIN estat_operatiu e on e.id = a.estat_actual_id LEFT JOIN info_utilitzacio iu on iu.atraccio_id = a.id and iu.pasi_id = @pas LEFT JOIN tipus_acces ta on ta.id = (select tipus_acces_id from tipus_acces_atraccio where tipus_pasi_id = @t_pas and atraccio_id = a.id) WHERE ta.nom is not null", conn1);
                 DBUtils.CrearParametre("cli", cli, com);
                 var reader = com.ExecuteReader();
                 while (reader.Read())
@@ -257,6 +260,7 @@ namespace MySqlDriver
 
         public void updateCuaAtraccio(int atraccio, int cua)
         {
+            if (cua == 0) return;
             using (var conn = new MySqlConnection(url))
             {
                 conn.Open();
