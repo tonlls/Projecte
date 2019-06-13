@@ -309,6 +309,7 @@ namespace MySqlDriver
                                      re.GetFloat("preu_discapacitat"),
                                      re.GetFloat("preu_nen_senior"),
                                      parcs));
+                    re1.Close();
                 }
                 re.Close();
                 return ret;
@@ -331,9 +332,218 @@ namespace MySqlDriver
                 //return (int)com.ExecuteScalar();
             }
         }
-        public void calcPreu()
+
+        public int insertEntrada(entrada e,List<info_parc> parcs)
         {
-            string txt = "SELECT FROM preu_parc pp JOIN preu pr ON pp.preu_id=pr.id JOIN parc pa ON pp.parc_id=pa.id ";
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("insert into entrada(dies_validesa,preu,client_id,categoria_id,preu_id) values(@dies,@preu,@client,@cat,@preu_id)",conn);
+                MySqlCommand com1 = new MySqlCommand("select id from client where nif=@nif",conn);
+                DBUtils.CrearParametre("nif", e.nif, com1);
+
+                var obj=com1.ExecuteScalar();
+                int id = obj == null ? -1 : (int)obj;
+                if (id == -1)
+                {
+                    using (var conn1 = new MySqlConnection(url))
+                    {
+                        conn1.Open();
+                        MySqlCommand com2 = new MySqlCommand("insert into client(nif) values(@nif)",conn1);
+                        DBUtils.CrearParametre("nif", e.nif, com2);
+                        com2.ExecuteNonQuery();
+                    }
+                    obj = com1.ExecuteScalar();
+                    id = obj == null ? -1 : (int)obj;
+                }
+                DBUtils.CrearParametre("preu", e.preu, com);
+                DBUtils.CrearParametre("dies", e.dies, com);
+                DBUtils.CrearParametre("client", id, com);
+                DBUtils.CrearParametre("cat", e.categoria, com);
+                DBUtils.CrearParametre("preu_id", e.preu_id, com);
+                com.ExecuteNonQuery();
+                int en;
+                using (var conn2 = new MySqlConnection(url))
+                {
+                    conn2.Open();
+                    MySqlCommand com3 = new MySqlCommand("select max(id) from entrada", conn2);
+                    en= (int)com3.ExecuteScalar();
+                    foreach(info_parc i in parcs)
+                    {
+                        MySqlCommand com4 = new MySqlCommand("insert into entrada_parc(entrada_id,parc_id) values(@e,@p)",conn);
+                        DBUtils.CrearParametre("p", i.id, com4);
+                        DBUtils.CrearParametre("e", en, com4);
+                        com4.ExecuteNonQuery();
+                    }
+                    return en;
+                }
+            }
+        }
+
+        public List<tipus_passi> getTipusPasis()
+        {
+            List<tipus_passi> pasis = new List<tipus_passi>();
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("select id,nom,preu_dia preu from tipus_pasi_expres",conn);
+                var r=com.ExecuteReader();
+                while (r.Read())
+                {
+                    pasis.Add(new tipus_passi(r.GetInt32("id"), r.GetString("nom"), r.GetFloat("preu")));
+                }
+            }
+            return pasis;
+
+        }
+
+        public void insertPassi(passi p)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("select id from client where nif=@nif", conn);
+                DBUtils.CrearParametre("nif", p.cli.nif, com);
+                Object cli = com.ExecuteScalar();
+                if (cli == null)
+                {
+                    MySqlCommand com1 = new MySqlCommand("insert into client(nif,nom,cognom1,cognom2,contrasenya) values(@nif,@nom,@cog1,@cog2,@pas)",conn);
+                    DBUtils.CrearParametre("nif", p.cli.nif, com1);
+                    DBUtils.CrearParametre("nom", p.cli.nom, com1);
+                    DBUtils.CrearParametre("cog1", p.cli.cognom1, com1);
+                    DBUtils.CrearParametre("cog2", p.cli.cognom2, com1);
+                    DBUtils.CrearParametre("pas", p.cli.contra, com1);
+                    com1.ExecuteNonQuery();
+                    cli = com.ExecuteScalar();
+                }
+                else
+                {
+                    MySqlCommand com2 = new MySqlCommand("select contrasenya from client where id=@id",conn);
+                    DBUtils.CrearParametre("id", (int)cli, com2);
+                    Object update = com2.ExecuteScalar();
+                    if (update == null)
+                    {
+                        MySqlCommand com3 = new MySqlCommand("update client set nom=@nom,cognom1=@cog1,cognom2=@cog2,contraseny=@pas",conn);
+                        DBUtils.CrearParametre("nom", p.cli.nom, com3);
+                        DBUtils.CrearParametre("cog1", p.cli.cognom1, com3);
+                        DBUtils.CrearParametre("cog2", p.cli.cognom2, com3);
+                        DBUtils.CrearParametre("pas", p.cli.contra, com3);
+                        com3.ExecuteNonQuery();
+                    }
+                }
+                MySqlCommand com4 = new MySqlCommand("insert into pasi_expres(client_id,tipus_id) values(@cli,@typ)",conn);
+                DBUtils.CrearParametre("cli", (int)cli, com4);
+                DBUtils.CrearParametre("typ",p.type, com4);
+                com4.ExecuteNonQuery();
+
+            }
+        }
+
+        public void addTipusPasi(tipus_passi tp)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("insert into tipus_pasi_expres(nom,preu_dia) values(@nom,@preu)",conn);
+                DBUtils.CrearParametre("nom", tp.nom, com);
+                DBUtils.CrearParametre("preu", tp.preu, com);
+                com.ExecuteNonQuery();
+            }
+        }
+
+        public List<info_atraccio> getAtraccions(int tipus_passi)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                var res = new List<info_atraccio>();
+                //MySqlCommand com = new MySqlCommand("SELECT a.id,a.nom,a.url_foto,p.nom nom_parc,p.url_foto foto_parc,a.estat_actual_id,(a.clients_cua/a.capacitat_maxima_ronda)*a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a, parc p, zona z WHERE a.zona_id = z.id and a.parc_id = z.parc_id and p.id = z.parc_id", conn);
+                MySqlCommand com = new MySqlCommand("SELECT a.id,a.parc_id parc_id,a.nom,a.url_foto,a.estat_actual_id,a.temps_per_ronda temps_espera,a.descripcioHTML,a.capacitat_maxima_ronda,a.alçada_minima alsada_min,a.alçada_minima_acompanyat alsada_min_acomp FROM atraccio a where a.id in (select atraccio_id from tipus_acces_atraccio where tipus_pasi_id=@pas)", conn);
+                DBUtils.CrearParametre("pas", tipus_passi, com);
+
+                using (var reader = com.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        res.Add(new info_atraccio((int)reader.GetInt32("id"),
+                                                  (string)reader.GetString("nom"),
+                                                  (string)reader.GetString("url_foto"),
+                                                  (int)reader.GetInt32("parc_id"),
+                                                  (int)reader.GetInt32("estat_actual_id"),
+                                                  (float)reader.GetDecimal("temps_espera"),
+                                                  (string)reader.GetString("descripcioHTML"),
+                                                  (int)reader.GetInt32("capacitat_maxima_ronda"),
+                                                  (int)reader.GetInt32("alsada_min"),
+                                                  (int)reader.GetInt32("alsada_min_acomp")));
+                        //var y = reader.GetSchemaTable();
+                    }
+                }
+                return res;
+            }
+        }
+
+        public void addAtracciotoTipusPassi(int pas,int atraccio,int acces)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("insert into tipus_acces_atraccio(atraccio_id,tipus_pasi_id,tipus_acces_id) values(@atr,@pas,@acc)",conn);
+                DBUtils.CrearParametre("atr", atraccio, com);
+                DBUtils.CrearParametre("pas", pas, com);
+                DBUtils.CrearParametre("acc", acces, com);
+                MySqlCommand com1 = new MySqlCommand("select atraccio_id from tipus_acces_atraccio where tipus_pasi_id=@pas and atraccio_id=@atr", conn);
+                DBUtils.CrearParametre("atr", atraccio, com1);
+                DBUtils.CrearParametre("pas", pas, com1);
+                Object o = com1.ExecuteScalar();
+                if (o == null) com.ExecuteNonQuery();
+            }
+        }
+
+        public void removeAtracciotoTipusPassi(int pas, int atraccio)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("delete from tipus_acces_atraccio where atraccio_id=@atr and tipus_pasi_id=@pas",conn);
+                DBUtils.CrearParametre("atr", atraccio, com);
+                DBUtils.CrearParametre("pas", pas, com);
+                com.ExecuteNonQuery();
+            }
+        }
+
+        public void updatePasiType(int id,string name, string preu)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("update tipus_pasi_expres set preu_dia=@preu,nom=@nom where id=@id", conn);
+                DBUtils.CrearParametre("preu", preu, com);
+                DBUtils.CrearParametre("nom", name, com);
+                DBUtils.CrearParametre("id", id, com);
+                com.ExecuteNonQuery();
+            }
+        }
+
+        public bool delPassiType(int id)
+        {
+            using (var conn = new MySqlConnection(url))
+            {
+                conn.Open();
+                MySqlCommand com = new MySqlCommand("select id from pasi_expres where tipus_id=@id", conn);
+                MySqlCommand com2 = new MySqlCommand("select * from tipus_acces_atraccio where tipus_pasi_id=@id", conn);
+                DBUtils.CrearParametre("id", id, com);
+                DBUtils.CrearParametre("id", id, com2);
+                Object o = com.ExecuteScalar();
+                Object o2 = com2.ExecuteScalar();
+                if (o == null&&o2==null)
+                {
+                    MySqlCommand com1 = new MySqlCommand("delete from tipus_pasi_expres where id=@id",conn);
+                    DBUtils.CrearParametre("id", id, com1);
+                    com1.ExecuteNonQuery();
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }

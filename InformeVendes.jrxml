@@ -3,11 +3,15 @@
 	<property name="ireport.zoom" value="1.2100000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="ireport.jasperserver.reportUnit" value="/m2-tllucia/vendes"/>
+	<property name="ireport.jasperserver.url" value="http://92.222.27.83:8080/jasperserver/services/repository"/>
 	<parameter name="id" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT p.nom,p.url_foto,p.id parc,
+(select count(*) from pasi_expres) as pasis,
+(SELECT COUNT(*) FROM entrada) as totalEntrades,
 (select count(*) from entrada e join entrada_parc ep on ep.entrada_id=e.id where ep.parc_id=p.id and e.categoria_id=(select id from categoria_entrada where nom='ADULT'))  as entradesAdult,
 (select count(*) from entrada e join entrada_parc ep on ep.entrada_id=e.id where ep.parc_id=p.id and e.categoria_id=(select id from categoria_entrada where nom='DISCAPACITAT'))  as entradesDiscapacitat,
 (select count(*) from entrada e join entrada_parc ep on ep.entrada_id=e.id where ep.parc_id=p.id and e.categoria_id=(select id from categoria_entrada where nom='SENIOR'))  as entradesSenior
@@ -21,6 +25,8 @@ where ($P{id} is null or p.id=$P{id})]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="parc" class="java.lang.Integer"/>
+	<field name="pasis" class="java.lang.Long"/>
+	<field name="totalEntrades" class="java.lang.Long"/>
 	<field name="entradesAdult" class="java.lang.Long"/>
 	<field name="entradesDiscapacitat" class="java.lang.Long"/>
 	<field name="entradesSenior" class="java.lang.Long"/>
@@ -53,9 +59,9 @@ where ($P{id} is null or p.id=$P{id})]]>
 				</textElement>
 				<text><![CDATA[Informe De Ventes]]></text>
 			</staticText>
-			<image>
-				<reportElement uuid="b08e23f6-a8c2-4ed4-abec-60b43af00054" x="389" y="11" width="100" height="50"/>
-				<imageExpression><![CDATA[new URL($F{url_foto})]]></imageExpression>
+			<image isLazy="true">
+				<reportElement uuid="b08e23f6-a8c2-4ed4-abec-60b43af00054" x="422" y="0" width="133" height="74"/>
+				<imageExpression><![CDATA[$F{url_foto}]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>
@@ -94,6 +100,36 @@ where ($P{id} is null or p.id=$P{id})]]>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="20" splitType="Stretch"/>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="5e956cb7-b5be-4c2c-8f69-5b61a6015b4e" x="455" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
+	<lastPageFooter>
+		<band height="40">
+			<staticText>
+				<reportElement uuid="b3eba30b-858a-4d71-8ac2-55b2aff55e11" x="0" y="0" width="75" height="20"/>
+				<textElement/>
+				<text><![CDATA[Tola Entrades:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="9da19fba-38f2-47a9-a023-c754cb940959" x="75" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{totalEntrades}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b71c83db-cc53-49cf-8f25-a2834d922df6" x="75" y="20" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{pasis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="72a0d440-3576-4419-b672-7b9d2820839b" x="0" y="20" width="75" height="20"/>
+				<textElement/>
+				<text><![CDATA[Total Passis:]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
 </jasperReport>

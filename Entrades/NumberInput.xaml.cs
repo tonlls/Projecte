@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+
+// La plantilla de elemento Control de usuario está documentada en https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Entrades
 {
-    /// <summary>
-    /// Lógica de interacción para NumberInput.xaml
-    /// </summary>
-    public partial class NumberInput : UserControl
+    public sealed partial class NumberInput : UserControl
     {
 
+
+        public event EventHandler ValueChanged;
 
         public int number
         {
@@ -31,7 +32,7 @@ namespace Entrades
 
         // Using a DependencyProperty as the backing store for number.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty numberProperty =
-            DependencyProperty.Register("number", typeof(int), typeof(NumberInput), new PropertyMetadata(0,onNumberChangedStatic));
+            DependencyProperty.Register("number", typeof(int), typeof(NumberInput), new PropertyMetadata(0, onNumberChangedStatic));
 
         private static void onNumberChangedStatic(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -41,6 +42,7 @@ namespace Entrades
         private void numberChanged()
         {
             num.Text = number.ToString();
+            if(ValueChanged!=null)ValueChanged(this, EventArgs.Empty);
         }
 
         public NumberInput()
@@ -61,34 +63,28 @@ namespace Entrades
             if (number > 0)
             {
                 number--;
-                 numberChanged();
+                numberChanged();
             }
         }
 
-        private void Num_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        /*private void Num_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !IsTextAllowed(e.Text);
-        }
+        }*/
         private static readonly Regex _regex = new Regex("[^0-9]+"); //regex that matches disallowed text
+        private EventHandler nbHand;
+
         private static bool IsTextAllowed(string text)
         {
             return !_regex.IsMatch(text);
         }
 
-        private void Num_Pasting(object sender, DataObjectPastingEventArgs e)
+        private void Num_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (e.DataObject.GetDataPresent(typeof(String)))
-            {
-                String text = (String)e.DataObject.GetData(typeof(String));
-                if (!IsTextAllowed(text))
-                {
-                    e.CancelCommand();
-                }
-            }
-            else
-            {
-                e.CancelCommand();
-            }
+             
+            e.Handled = !(e.Key.ToString().StartsWith("Number"));
         }
+
+        
     }
 }

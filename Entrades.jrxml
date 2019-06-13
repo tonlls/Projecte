@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cf3b005d-2d4e-4f5d-ba92-c98498f5eced">
-	<property name="ireport.zoom" value="1.6105100000000008"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="300" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cf3b005d-2d4e-4f5d-ba92-c98498f5eced">
+	<property name="ireport.zoom" value="1.7715610000000035"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="id" class="java.lang.Integer">
+	<parameter name="idMax" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idMin" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select p.nom,c.nom cat
+		<![CDATA[select e.id,p.nom,c.nom cat,e.dies_validesa validesa,e.preu preu,cli.nif nif,cli.contrasenya pass,e.preu preu
 from entrada e
 join categoria_entrada c
 on c.id=e.categoria_id
@@ -15,62 +18,100 @@ join entrada_parc ep
 on ep.entrada_id=e.id
 join parc p
 on p.id=ep.parc_id
-where e.id>=$P{id}
-and e.id<=5]]>
+join client cli on cli.id=e.client_id
+where e.id between $P{idMin} and $P{idMax}
+order by e.id]]>
 	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="nom" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="cat" class="java.lang.String"/>
-	<group name="entrade">
-		<groupExpression><![CDATA[$P{id}]]></groupExpression>
-		<groupHeader>
-			<band height="50">
-				<textField>
-					<reportElement uuid="cda0a197-87eb-4864-b18d-c783b4b15efa" x="0" y="0" width="100" height="20"/>
-					<textElement/>
-					<textFieldExpression><![CDATA[$P{id}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupHeader>
-		<groupFooter>
-			<band height="50"/>
-		</groupFooter>
+	<field name="validesa" class="java.lang.Integer"/>
+	<field name="preu" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nif" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="pass" class="java.lang.String"/>
+	<group name="entrada_grup" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{id}]]></groupExpression>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="79" splitType="Stretch"/>
-	</title>
 	<pageHeader>
-		<band height="20" splitType="Stretch"/>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d9940ea6-ad3e-497d-b2dd-0c7ac9347cb4" x="0" y="0" width="228" height="40"/>
+				<textElement>
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[Port Aventura World]]></text>
+			</staticText>
+		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="20" splitType="Stretch">
+		<band height="29" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="ce897cf7-90ca-4de3-9dd7-d3c49c644ead" x="0" y="0" width="100" height="20"/>
 				<textElement/>
-				<text><![CDATA[Parc]]></text>
+				<text><![CDATA[Parcs]]></text>
 			</staticText>
+			<line>
+				<reportElement uuid="d2aba90f-a10e-4c2f-89ea-8989770a52fc" x="0" y="20" width="555" height="1"/>
+			</line>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement uuid="09131575-344f-4beb-8f29-a6c86313e98f" x="0" y="0" width="100" height="20"/>
+				<reportElement uuid="09131575-344f-4beb-8f29-a6c86313e98f" x="16" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nom}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="76">
+			<textField>
+				<reportElement uuid="b1161f07-2ce1-482c-8586-028006860f5d" x="16" y="56" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Preu: "+$F{preu}+" €"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5952c897-5867-4f7f-9df9-c9503b2d6f63" x="0" y="0" width="50" height="20"/>
+				<textElement/>
+				<text><![CDATA[Validesa]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="9c4b2469-06a1-4a2e-9218-3afbcd6701ed" x="50" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{validesa}+" dies"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ae19e967-5b24-4ff7-9e1c-f78eb7ea728d" x="0" y="20" width="50" height="20"/>
+				<textElement/>
+				<text><![CDATA[Categoria]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="bbc5ad2b-fabb-43fb-8280-fdbe884dde84" x="50" y="20" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c5457935-e48f-4d93-a2b4-cad5ff2e98ee" x="455" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{pass}==null?"":"Usuari: "+$F{nif}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7ca73b36-b81b-49a5-a8ba-03857a6c18f1" x="455" y="20" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{pass}==null?"":"Contrasenya "+$F{pass}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

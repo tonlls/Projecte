@@ -15,11 +15,19 @@ namespace DBBasic.Model
             return nom;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is info_parc parc &&
+                   id == parc.id;
+        }
+
         public info_parc(int id, string nom, string url_foto)
         {
             this.id = id;
             this.nom = nom;
             this.url_foto = url_foto;
         }
+
+
     }
 }

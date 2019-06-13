@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="Entrades.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Entrades"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Button Name="entrades" Click="Entrades_Click">Buy Entrades</Button>
+            <Button Name="passis" Click="Passis_Click">Buy Passis</Button>
+            <Button Name="manage_passis" Click="Manage_passis_Click">Manage Passis</Button>
+            <Button Name="Informe" Click="Informe_Click">Informe de Ventes</Button>
+        </StackPanel>
+        
+        <Frame Name="frame" Width="auto" Height="auto">
+
+        </Frame>
+    </StackPanel>
+</Page>

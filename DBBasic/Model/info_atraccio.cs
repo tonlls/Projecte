@@ -32,5 +32,10 @@ namespace DBBasic
             this.alçada_minima = alçada_minima;
             this.alçada_minima_acompanyant = alçada_minima_acompanyant;
         }
+
+        public override string ToString()
+        {
+            return nom;
+        }
     }
 }

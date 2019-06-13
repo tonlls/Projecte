@@ -41,8 +41,10 @@ insert into preu_parc(preu_id,parc_id)
 values
 	(1,1),
 	(2,1),
-	(3,1),
+	(3,3),
+	(3,2),
 	(4,1);
+	
 	
 insert into tipus_pasi_expres(nom,preu_dia) 
 values
